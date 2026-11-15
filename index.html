@@ -1,0 +1,3270 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نظام نقطة بيع المطعم</title>
+
+<style>
+:root {
+    --primary:#2563eb;
+    --primary-dark:#1d4ed8;
+    --secondary:#64748b;
+    --success:#16a34a;
+    --danger:#dc2626;
+    --warning:#d97706;
+    --bg:#f1f5f9;
+    --card:#ffffff;
+    --text:#0f172a;
+    --muted:#64748b;
+    --border:#e2e8f0;
+    --shadow:0 10px 30px rgba(15,23,42,.08);
+}
+
+* {
+    box-sizing:border-box;
+}
+
+body {
+    margin:0;
+    font-family:Tahoma, Arial, sans-serif;
+    background:var(--bg);
+    color:var(--text);
+}
+
+button,
+input,
+select,
+textarea {
+    font:inherit;
+}
+
+button {
+    cursor:pointer;
+}
+
+.hidden {
+    display:none !important;
+}
+
+.app {
+    min-height:100vh;
+}
+
+/* =========================
+   شاشة الدخول
+========================= */
+
+.login-screen {
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    background:
+        linear-gradient(135deg,rgba(15,23,42,.88),rgba(37,99,235,.85)),
+        radial-gradient(circle at top left,#38bdf8,transparent 35%);
+}
+
+.login-card {
+    width:min(430px,100%);
+    background:#fff;
+    border-radius:24px;
+    padding:35px;
+    box-shadow:0 25px 70px rgba(0,0,0,.25);
+}
+
+.login-logo {
+    width:80px;
+    height:80px;
+    border-radius:22px;
+    display:grid;
+    place-items:center;
+    margin:0 auto 18px;
+    background:linear-gradient(135deg,var(--primary),#7c3aed);
+    color:#fff;
+    font-size:42px;
+}
+
+.login-card h1 {
+    text-align:center;
+    margin:0 0 8px;
+}
+
+.login-card p {
+    text-align:center;
+    color:var(--muted);
+    margin:0 0 28px;
+}
+
+/* =========================
+   الترويسة
+========================= */
+
+.topbar {
+    min-height:72px;
+    padding:0 25px;
+    color:#fff;
+    background:linear-gradient(135deg,#172554,#2563eb);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    box-shadow:0 3px 15px rgba(0,0,0,.15);
+}
+
+.brand {
+    display:flex;
+    align-items:center;
+    gap:12px;
+    font-size:20px;
+    font-weight:bold;
+}
+
+.brand-logo {
+    width:42px;
+    height:42px;
+    border-radius:12px;
+    display:grid;
+    place-items:center;
+    background:rgba(255,255,255,.18);
+}
+
+.user-area {
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+/* =========================
+   عناصر عامة
+========================= */
+
+.container {
+    width:min(1500px,calc(100% - 30px));
+    margin:25px auto;
+}
+
+.card {
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:18px;
+    box-shadow:var(--shadow);
+}
+
+.form-group {
+    margin-bottom:16px;
+}
+
+.form-group label {
+    display:block;
+    margin-bottom:7px;
+    font-weight:bold;
+    font-size:14px;
+}
+
+.form-control {
+    width:100%;
+    padding:12px 14px;
+    border:1px solid #cbd5e1;
+    border-radius:10px;
+    outline:none;
+    background:#fff;
+    transition:.2s;
+}
+
+.form-control:focus {
+    border-color:var(--primary);
+    box-shadow:0 0 0 3px rgba(37,99,235,.12);
+}
+
+textarea.form-control {
+    min-height:90px;
+    resize:vertical;
+}
+
+button.form-control {
+    cursor:pointer;
+}
+
+.btn {
+    border:0;
+    border-radius:10px;
+    padding:11px 16px;
+    color:#fff;
+    background:var(--primary);
+    transition:.2s;
+}
+
+.btn:hover {
+    transform:translateY(-1px);
+    background:var(--primary-dark);
+}
+
+.btn.secondary {
+    background:var(--secondary);
+}
+
+.btn.success {
+    background:var(--success);
+}
+
+.btn.danger {
+    background:var(--danger);
+}
+
+.btn.warning {
+    background:var(--warning);
+}
+
+.btn.light {
+    color:var(--text);
+    background:#e2e8f0;
+}
+
+.btn.small {
+    padding:7px 10px;
+    font-size:13px;
+}
+
+.actions {
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+}
+
+.alert {
+    padding:12px 15px;
+    border-radius:10px;
+    margin-bottom:15px;
+}
+
+.alert-danger {
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+.alert-success {
+    background:#dcfce7;
+    color:#166534;
+}
+
+.page-title {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.page-title h2 {
+    margin:0;
+}
+
+.muted {
+    color:var(--muted);
+}
+
+/* =========================
+   لوحة المدير
+========================= */
+
+.admin-menu {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+}
+
+.menu-card {
+    border:0;
+    border-radius:20px;
+    padding:28px 20px;
+    color:#fff;
+    min-height:150px;
+    text-align:right;
+    box-shadow:var(--shadow);
+    transition:.2s;
+}
+
+.menu-card:hover {
+    transform:translateY(-4px);
+}
+
+.menu-card .icon {
+    font-size:36px;
+    margin-bottom:15px;
+}
+
+.menu-card h3 {
+    margin:0 0 8px;
+}
+
+.menu-card p {
+    margin:0;
+    opacity:.88;
+}
+
+.menu-blue {
+    background:linear-gradient(135deg,#2563eb,#1e40af)
+}
+
+.menu-purple {
+    background:linear-gradient(135deg,#7c3aed,#4c1d95)
+}
+
+.menu-green {
+    background:linear-gradient(135deg,#16a34a,#166534)
+}
+
+.menu-orange {
+    background:linear-gradient(135deg,#ea580c,#9a3412)
+}
+
+/* =========================
+   الكاشير
+========================= */
+
+.pos-layout {
+    display:grid;
+    grid-template-columns:230px 1fr 380px;
+    gap:18px;
+    align-items:start;
+}
+
+.panel {
+    padding:18px;
+}
+
+.panel-title {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:15px;
+}
+
+.panel-title h3 {
+    margin:0;
+}
+
+.categories-list {
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.category-item {
+    width:100%;
+    border:1px solid var(--border);
+    background:#f8fafc;
+    border-radius:10px;
+    padding:12px;
+    text-align:right;
+    transition:.2s;
+}
+
+.category-item:hover,
+.category-item.active {
+    background:#dbeafe;
+    color:#1d4ed8;
+    border-color:#93c5fd;
+}
+
+.product-header {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:16px;
+}
+
+.product-header h2 {
+    margin:0 0 5px;
+}
+
+.products-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
+    gap:15px;
+}
+
+/* =========================
+   بطاقة الصنف + الصورة
+========================= */
+
+.product-card {
+    padding:12px;
+    border:1px solid var(--border);
+    border-radius:15px;
+    background:#fff;
+    text-align:right;
+    transition:.2s;
+    overflow:hidden;
+}
+
+.product-card:hover {
+    transform:translateY(-3px);
+    box-shadow:var(--shadow);
+    border-color:#93c5fd;
+}
+
+.product-image {
+    width:100%;
+    height:150px;
+    margin-bottom:12px;
+    border-radius:12px;
+    overflow:hidden;
+    background:#f1f5f9;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.product-image img {
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+}
+
+.product-image-placeholder {
+    width:100%;
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:50px;
+    color:#94a3b8;
+    background:linear-gradient(135deg,#f1f5f9,#e2e8f0);
+}
+
+.product-card h4 {
+    margin:0 0 8px;
+    min-height:22px;
+}
+
+.product-price {
+    color:var(--success);
+    font-weight:bold;
+    margin-bottom:12px;
+}
+
+/* =========================
+   الفاتورة
+========================= */
+
+.invoice {
+    position:sticky;
+    top:20px;
+}
+
+.invoice-header {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding-bottom:15px;
+    border-bottom:1px solid var(--border);
+}
+
+.invoice-header h3 {
+    margin:0;
+}
+
+.invoice-number {
+    color:var(--primary);
+    font-size:13px;
+}
+
+.invoice-items {
+    max-height:390px;
+    overflow:auto;
+    padding:10px 0;
+}
+
+.empty {
+    color:var(--muted);
+    text-align:center;
+    padding:35px 10px;
+}
+
+.invoice-item {
+    display:grid;
+    grid-template-columns:1fr auto;
+    gap:8px;
+    padding:11px 0;
+    border-bottom:1px dashed var(--border);
+}
+
+.invoice-item-name {
+    font-weight:bold;
+}
+
+.invoice-item-price {
+    color:var(--success);
+    font-size:13px;
+}
+
+.qty-controls {
+    display:flex;
+    align-items:center;
+    gap:7px;
+    margin-top:7px;
+}
+
+.qty-btn {
+    width:25px;
+    height:25px;
+    border:0;
+    border-radius:7px;
+    color:#fff;
+    background:var(--primary);
+}
+
+.invoice-footer {
+    border-top:1px solid var(--border);
+    padding-top:15px;
+}
+
+.total-row {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    font-size:20px;
+    font-weight:bold;
+    margin-bottom:15px;
+}
+
+.total-value {
+    color:var(--success);
+}
+
+.invoice-footer .btn,
+.invoice-footer button {
+    width:100%;
+    margin-bottom:8px;
+}
+
+
+
+.settings-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(330px,1fr));
+    gap:20px;
+}
+
+.settings-card {
+    padding:20px;
+}
+
+.settings-card h3 {
+    margin-top:0;
+    border-bottom:1px solid var(--border);
+    padding-bottom:12px;
+}
+
+.table-wrap {
+    overflow:auto;
+    margin-top:18px;
+}
+
+table {
+    width:100%;
+    border-collapse:collapse;
+    min-width:650px;
+}
+
+th,
+td {
+    padding:12px;
+    border-bottom:1px solid var(--border);
+    text-align:right;
+    vertical-align:middle;
+}
+
+th {
+    color:#334155;
+    background:#f8fafc;
+}
+
+.product-table-image {
+    width:60px;
+    height:60px;
+    object-fit:cover;
+    border-radius:10px;
+    border:1px solid var(--border);
+    display:block;
+}
+
+.product-table-placeholder {
+    width:60px;
+    height:60px;
+    border-radius:10px;
+    background:#f1f5f9;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:25px;
+}
+
+/* =========================
+   السجل
+========================= */
+
+.history-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:15px;
+}
+
+.invoice-history-card {
+    padding:18px;
+}
+
+.invoice-history-card h3 {
+    margin-top:0;
+}
+
+/* =========================
+   النوافذ
+========================= */
+
+.modal-backdrop {
+    position:fixed;
+    inset:0;
+    background:rgba(15,23,42,.6);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:1000;
+}
+
+.modal {
+    width:min(550px,100%);
+    max-height:90vh;
+    overflow:auto;
+    background:#fff;
+    border-radius:18px;
+    padding:22px;
+    box-shadow:0 25px 70px rgba(0,0,0,.3);
+}
+
+.modal-header {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.modal-header h3 {
+    margin:0;
+}
+
+.close {
+    border:0;
+    background:#fee2e2;
+    color:#991b1b;
+    border-radius:8px;
+    width:32px;
+    height:32px;
+}
+
+.modal-footer {
+    display:flex;
+    justify-content:flex-start;
+    gap:8px;
+    margin-top:18px;
+}
+
+/* معاينة صورة الصنف داخل النافذة */
+
+.product-image-preview {
+    margin-top:12px;
+    min-height:130px;
+    border:1px dashed #cbd5e1;
+    border-radius:12px;
+    background:#f8fafc;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:10px;
+}
+
+.product-image-preview img {
+    width:180px;
+    height:130px;
+    object-fit:cover;
+    border-radius:10px;
+}
+
+/* =========================
+   الطباعة
+========================= */
+
+.print-options {
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+}
+
+.print-option {
+    padding:18px 10px;
+    border:1px solid var(--border);
+    border-radius:12px;
+    background:#f8fafc;
+    text-align:center;
+}
+
+.print-option:hover {
+    background:#dbeafe;
+    border-color:#93c5fd;
+}
+
+.receipt {
+    color:#000;
+    background:#fff;
+    padding:15px;
+    direction:rtl;
+    font-family:Arial,Tahoma,sans-serif;
+}
+
+.receipt.a4 {
+    width:210mm;
+    min-height:297mm;
+    margin:auto;
+}
+
+.receipt.small80 {
+    width:80mm;
+    margin:auto;
+}
+
+.receipt-logo {
+    max-width:100px;
+    max-height:80px;
+    display:block;
+    margin:0 auto 8px;
+}
+
+.receipt-title {
+    text-align:center;
+    font-size:20px;
+    font-weight:bold;
+}
+
+.receipt-info {
+    text-align:center;
+    font-size:12px;
+    line-height:1.8;
+}
+
+.receipt table {
+    min-width:0;
+    font-size:12px;
+    margin-top:15px;
+}
+
+.receipt th,
+.receipt td {
+    padding:6px 3px;
+    border-bottom:1px solid #999;
+}
+
+.receipt-total {
+    display:flex;
+    justify-content:space-between;
+    margin-top:15px;
+    font-size:17px;
+    font-weight:bold;
+}
+
+.receipt-qr {
+    text-align:center;
+    margin-top:15px;
+}
+
+.receipt-barcode {
+    text-align:center;
+    margin-top:15px;
+}
+
+.receipt-barcode svg {
+    max-width:95%;
+    height:55px;
+}
+
+/* =========================
+   responsive
+========================= */
+
+@media(max-width:1100px) {
+
+    .pos-layout {
+        grid-template-columns:190px 1fr;
+    }
+
+    .invoice {
+        grid-column:1 / -1;
+        position:static;
+    }
+}
+
+@media(max-width:700px) {
+
+    .topbar {
+        height:auto;
+        min-height:70px;
+        padding:12px 15px;
+        flex-wrap:wrap;
+    }
+
+    .container {
+        width:calc(100% - 20px);
+        margin:15px auto;
+    }
+
+    .pos-layout {
+        grid-template-columns:1fr;
+    }
+
+    .products-grid {
+        grid-template-columns:repeat(2,1fr);
+        gap:10px;
+    }
+
+    .product-image {
+        height:120px;
+    }
+
+    .print-options {
+        grid-template-columns:1fr;
+    }
+}
+
+@media(max-width:450px) {
+
+    .products-grid {
+        grid-template-columns:1fr 1fr;
+    }
+
+    .product-card {
+        padding:8px;
+    }
+
+    .product-image {
+        height:105px;
+    }
+
+    .product-card h4 {
+        font-size:14px;
+    }
+
+    .product-price {
+        font-size:13px;
+    }
+}
+
+@media print {
+
+    body * {
+        visibility:hidden !important;
+    }
+
+    #printArea,
+    #printArea * {
+        visibility:visible !important;
+    }
+
+    #printArea {
+        position:absolute;
+        top:0;
+        right:0;
+        left:0;
+        margin:0;
+    }
+}
+
+
+/* =========================
+   المخزون وإذن الصرف
+========================= */
+.stock-badge{display:inline-flex;align-items:center;justify-content:center;padding:4px 9px;border-radius:999px;font-size:12px;font-weight:bold;background:#dcfce7;color:#166534;margin-top:4px}
+.stock-badge.out{background:#fee2e2;color:#991b1b}
+.product-card.out-of-stock{opacity:.58;filter:grayscale(.25);cursor:not-allowed}
+.product-card.out-of-stock:hover{transform:none;box-shadow:none}
+.product-card .stock-only{font-size:16px;font-weight:bold;color:#1d4ed8;margin:8px 0}
+.issue-slip{direction:rtl;background:#fff;color:#000;font-family:Tahoma,Arial,sans-serif;padding:14mm;box-sizing:border-box}
+.issue-slip.a4{width:210mm;min-height:297mm;margin:auto}
+.issue-slip.small80{width:80mm;margin:auto;padding:7mm}
+.issue-head-title{text-align:center;font-size:25px;font-weight:bold;margin-bottom:3px;text-decoration:underline dotted;text-underline-offset:7px}
+.issue-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0 10px;font-size:15px;font-weight:bold}
+.issue-meta .right{text-align:right}.issue-meta .left{text-align:left}
+.issue-table{width:100%;border-collapse:collapse;margin-top:8px;table-layout:fixed}
+.issue-table th,.issue-table td{border:1.5px solid #333;padding:9px 6px;text-align:center;vertical-align:middle;height:30px}
+.issue-table th{background:#fff;font-weight:bold}
+.issue-table .code{width:12%}.issue-table .name{width:38%}.issue-table .qty{width:13%}.issue-table .place{width:37%}
+.issue-bottom{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:18px;font-size:14px;font-weight:bold;line-height:2.1}
+.issue-line{border-bottom:1px dotted #444;display:inline-block;min-width:90px;margin-right:5px}
+.import-box{border:1px dashed #94a3b8;border-radius:12px;padding:14px;background:#f8fafc;margin-top:12px}
+.import-help{font-size:12px;color:#64748b;line-height:1.8;margin-top:8px}
+@media print{.issue-slip.a4{padding:10mm}.issue-head-title{font-size:22px}.issue-table th,.issue-table td{padding:7px 4px}.issue-bottom{margin-top:12px}}
+</style>
+</head>
+
+<body>
+
+<div id="app"></div>
+
+<script>
+"use strict";
+
+/* =========================
+   البيانات الافتراضية
+========================= */
+
+const DEFAULT_DATA = {
+    users:[
+        {id:1,username:"admin",password:"admin",role:"admin",name:"المدير"},
+        {id:2,username:"cashier",password:"1234",role:"cashier",name:"الكاشير"}
+    ],
+    categories:[
+        {id:1,name:"الكهرباء",code:"elc"},
+        {id:2,name:"المخزن العام",code:"gen"}
+    ],
+    products:[],
+    issues:[],
+    invoices:[],
+    receipts:[],
+    issueCounters:{},
+    settings:{
+        restaurantName:"المخزن الرئيسي",
+        address:"",
+        phone:"",
+        taxNumber:"",
+        footer:"",
+        logo:"",
+        qrImage:"",
+        receiverName:"",
+        receiverCode:"",
+        approver:"",
+        storekeeper:""
+    },
+    invoiceCounter:1
+};
+/* =========================
+   المتغيرات
+========================= */
+
+let db = loadDB();
+
+let currentUser = null;
+
+let currentPage = "login";
+
+let selectedCategoryId =
+    db.categories[0]?.id || null;
+
+let cart = [];
+
+let editingCategoryId = null;
+
+let editingProductId = null;
+
+let removeCurrentProductImage = false;
+
+/* =========================
+   التخزين
+========================= */
+
+function clone(obj) {
+    return JSON.parse(JSON.stringify(obj));
+}
+
+function loadDB() {
+    try {
+        const saved=localStorage.getItem("restaurant_pos_database");
+        if(!saved){
+            localStorage.setItem("restaurant_pos_database",JSON.stringify(DEFAULT_DATA));
+            return clone(DEFAULT_DATA);
+        }
+        const parsed=JSON.parse(saved);
+        const categories=Array.isArray(parsed.categories)
+            ? parsed.categories.map((c,i)=>({
+                ...c,
+                code:String(c.code || (c.name ? slugCode(c.name) : `sec${i+1}`)).toLowerCase()
+            })) : clone(DEFAULT_DATA.categories);
+        const products=Array.isArray(parsed.products)
+            ? parsed.products.map(p=>({
+                ...p,
+                price:0,
+                openingBalance:Number(p.openingBalance ?? p.stock ?? p.quantity ?? 0),
+                usagePlace:p.usagePlace || p.place || "",
+                image:p.image || "",
+                code:String(p.code || p.itemCode || "")
+            })) : [];
+        return {
+            ...clone(DEFAULT_DATA),
+            ...parsed,
+            categories,
+            products,
+            issues:Array.isArray(parsed.issues) ? parsed.issues : (Array.isArray(parsed.invoices) ? parsed.invoices : []),
+            issueCounters:parsed.issueCounters || {},
+            receipts:Array.isArray(parsed.receipts) ? parsed.receipts : [],
+            settings:{...clone(DEFAULT_DATA.settings),...(parsed.settings||{})}
+        };
+    }catch(error){
+        return clone(DEFAULT_DATA);
+    }
+}
+
+function saveDB() {
+
+    localStorage.setItem(
+        "restaurant_pos_database",
+        JSON.stringify(db)
+    );
+}
+
+function makeId(list) {
+
+    return list.length
+        ? Math.max(
+            ...list.map(
+                x => Number(x.id) || 0
+            )
+        ) + 1
+        : 1;
+}
+
+/* =========================
+   أدوات عامة
+========================= */
+
+function money(value) {
+
+    return Number(value || 0)
+        .toFixed(2) + " ج.م";
+}
+
+function escapeHTML(value) {
+
+    return String(value ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+}
+
+function slugCode(value){
+    const s=String(value||"").trim().toLowerCase();
+    const map={"الكهرباء":"elc","المخزن العام":"gen","مخزن الكهرباء":"elc"};
+    if(map[s]) return map[s];
+    const latin=s.replace(/[^a-z0-9]+/g,"");
+    return latin || "sec";
+}
+function categoryById(id){return db.categories.find(c=>c.id===Number(id));}
+function nextIssueNumber(categoryId,consume=false){
+    const category=categoryById(categoryId);
+    const code=String(category?.code||`sec${categoryId}`).toLowerCase();
+    const current=Number(db.issueCounters[code]||0)+1;
+    if(consume) db.issueCounters[code]=current;
+    return `${code}-${String(current).padStart(4,"0")}`;
+}
+function totalCartQty(){return cart.reduce((sum,item)=>sum+Number(item.qty||0),0);}
+function stockEnded(productId){
+    const p=db.products.find(x=>x.id===Number(productId));
+    notify(`المخزون انتهى للصنف: ${p?.name||"الصنف"}`,"error");
+}
+function getProductCode(product){return String(product?.code||product?.id||"");}
+function getOpeningBalance(product){
+    return Number(product?.openingBalance ?? product?.stock ?? product?.quantity ?? 0) || 0;
+}
+function getIncomingForProduct(productId, beforeOrOn=null){
+    const id=Number(productId);
+    return (db.receipts||[]).reduce((sum,r)=>{
+        if(Number(r.productId)!==id) return sum;
+        if(beforeOrOn && new Date(r.date) > new Date(beforeOrOn)) return sum;
+        return sum + Number(r.qty||0);
+    },0);
+}
+function getIssuedForProduct(productId, beforeOrOn=null){
+    const id=Number(productId);
+    return (db.issues||[]).reduce((sum,issue)=>{
+        if(beforeOrOn && new Date(issue.date) > new Date(beforeOrOn)) return sum;
+        return sum + getIssueItems(issue).reduce((n,item)=>
+            Number(item.productId)===id ? n+Number(item.qty||0) : n,0);
+    },0);
+}
+function getCurrentStock(product){
+    if(!product) return 0;
+    return Math.max(0, getOpeningBalance(product) + getIncomingForProduct(product.id) - getIssuedForProduct(product.id));
+}
+function getStockAt(product, date){
+    if(!product) return 0;
+    const end=new Date(date); end.setHours(23,59,59,999);
+    return Math.max(0, getOpeningBalance(product) + getIncomingForProduct(product.id,end) - getIssuedForProduct(product.id,end));
+}
+function getStockBefore(product, date){
+    if(!product) return 0;
+    const start=new Date(date); start.setHours(0,0,0,0);
+    const before=new Date(start.getTime()-1);
+    return Math.max(0, getOpeningBalance(product) + getIncomingForProduct(product.id,before) - getIssuedForProduct(product.id,before));
+}
+function getIncomingInPeriod(productId, from, to){
+    const f=new Date(from); f.setHours(0,0,0,0);
+    const t=new Date(to); t.setHours(23,59,59,999);
+    return (db.receipts||[]).reduce((sum,r)=>{
+        const d=new Date(r.date);
+        return Number(r.productId)===Number(productId) && d>=f && d<=t ? sum+Number(r.qty||0) : sum;
+    },0);
+}
+function getIssuedInPeriod(productId, from, to){
+    const f=new Date(from); f.setHours(0,0,0,0);
+    const t=new Date(to); t.setHours(23,59,59,999);
+    return (db.issues||[]).reduce((sum,issue)=>{
+        const d=new Date(issue.date);
+        if(d<f||d>t) return sum;
+        return sum+getIssueItems(issue).reduce((n,item)=>Number(item.productId)===Number(productId)?n+Number(item.qty||0):n,0);
+    },0);
+}
+
+function getIssueItems(issue){return Array.isArray(issue.items)?issue.items:[];}
+function normalizeIssue(issue){
+    return {...issue,items:getIssueItems(issue),number:issue.number||issue.issueNumber||"",sectionId:Number(issue.sectionId||issue.categoryId||0)};
+}
+
+/* =========================
+   قارئ Excel/CSV يعمل دون إنترنت
+   يدعم XLSX/XLSM من أول ورقة، وCSV/TSV
+========================= */
+async function unzipEntries(buffer){
+    const bytes=new Uint8Array(buffer), view=new DataView(buffer), entries={};
+    const sig=0x04034b50;
+    let p=0;
+    const dec=new TextDecoder("utf-8");
+    while(p+30<=bytes.length){
+        if(view.getUint32(p,true)!==sig) break;
+        const method=view.getUint16(p+8,true), compSize=view.getUint32(p+18,true), nameLen=view.getUint16(p+26,true), extraLen=view.getUint16(p+28,true);
+        const name=dec.decode(bytes.slice(p+30,p+30+nameLen));
+        const dataStart=p+30+nameLen+extraLen;
+        const raw=bytes.slice(dataStart,dataStart+compSize);
+        if(method===0){entries[name]=raw.buffer.slice(raw.byteOffset,raw.byteOffset+raw.byteLength);}
+        else if(method===8){
+            const ds=new DecompressionStream("deflate-raw");
+            entries[name]=await new Response(new Blob([raw]).stream().pipeThrough(ds)).arrayBuffer();
+        } else throw new Error("unsupported_zip_method");
+        p=dataStart+compSize;
+    }
+    return entries;
+}
+function xmlText(buffer){return new TextDecoder("utf-8").decode(new Uint8Array(buffer));}
+function excelColumnIndex(ref){
+    const letters=(String(ref).match(/^[A-Z]+/i)||[""])[0].toUpperCase();
+    let n=0; for(const ch of letters)n=n*26+ch.charCodeAt(0)-64; return n-1;
+}
+async function parseXlsxFile(file){
+    const entries=await unzipEntries(await file.arrayBuffer());
+    const shared=[];
+    if(entries["xl/sharedStrings.xml"]){
+        const xml=new DOMParser().parseFromString(xmlText(entries["xl/sharedStrings.xml"]),"application/xml");
+        xml.querySelectorAll("si").forEach(si=>shared.push(Array.from(si.querySelectorAll("t")).map(t=>t.textContent).join("")));
+    }
+    let sheetName=Object.keys(entries).find(k=>/^xl\/worksheets\/sheet1\.xml$/i.test(k));
+    if(!sheetName) sheetName=Object.keys(entries).find(k=>/^xl\/worksheets\/sheet\d+\.xml$/i.test(k));
+    if(!sheetName) throw new Error("sheet_not_found");
+    const xml=new DOMParser().parseFromString(xmlText(entries[sheetName]),"application/xml");
+    const rows=[];
+    xml.querySelectorAll("sheetData > row").forEach(row=>{
+        const cells=[]; row.querySelectorAll(":scope > c").forEach(c=>{
+            const ref=c.getAttribute("r")||"A1", idx=excelColumnIndex(ref), type=c.getAttribute("t");
+            let value="";
+            if(type==="inlineStr") value=Array.from(c.querySelectorAll("is t")).map(t=>t.textContent).join("");
+            else {const v=c.querySelector("v"); value=v?v.textContent:""; if(type==="s") value=shared[Number(value)]??""; if(type==="b") value=value==="1"?"1":"0";}
+            cells[idx]=value;
+        });
+        rows.push(cells);
+    });
+    return rows;
+}
+function parseDelimited(text){
+    const first=text.split(/\r?\n/).find(Boolean)||"";
+    const delimiter=first.includes("\t")?"\t":(first.includes(";")?";":",");
+    const rows=[]; let row=[],cell="",quoted=false;
+    for(let i=0;i<text.length;i++){
+        const ch=text[i],next=text[i+1];
+        if(ch==='"'&&quoted&&next==='"'){cell+='"';i++;continue;}
+        if(ch==='"'){quoted=!quoted;continue;}
+        if(ch===delimiter&&!quoted){row.push(cell);cell="";continue;}
+        if((ch==='\n'||ch==='\r')&&!quoted){if(ch==='\r'&&next==='\n')i++;row.push(cell);cell="";if(row.some(v=>String(v).trim()!==""))rows.push(row);row=[];continue;}
+        cell+=ch;
+    }
+    if(cell!==""||row.length){row.push(cell);rows.push(row);}
+    return rows;
+}
+function excelHeaderMap(headers){
+    const aliases={
+        code:["الكود","كود","code","itemcode","item code"],
+        name:["اسم الصنف","الصنف","الاسم","name","item","item name"],
+        section:["القسم","المخزن","section","category","warehouse"],
+        sectionCode:["كود القسم","كود المخزن","section code","category code","warehouse code"],
+        quantity:["الكمية","الرصيد","المخزون","رصيد أول المدة","opening balance","openingbalance","quantity","qty","stock"],
+        usagePlace:["مكان الاستخدام","مكان الصرف","مكان الاستخدام / الصرف","usage place","place"]
+    };
+    const map={}; headers.forEach((h,i)=>{const x=String(h??"").trim().toLowerCase(); for(const [key,list] of Object.entries(aliases)) if(list.some(a=>x===a||x.includes(a))&&!map[key]) map[key]=i;}); return map;
+}
+async function importProductsFromExcel(event){
+    const file=event.target.files?.[0]; if(!file)return;
+    try{
+        let rows;
+        const name=file.name.toLowerCase();
+        if(name.endsWith(".xlsx")||name.endsWith(".xlsm")) rows=await parseXlsxFile(file);
+        else rows=parseDelimited(await file.text());
+        if(rows.length<2) throw new Error("empty");
+        const headers=rows[0], map=excelHeaderMap(headers);
+        if(map.name===undefined||map.quantity===undefined) throw new Error("headers");
+        let added=0,updated=0;
+        rows.slice(1).forEach(row=>{
+            const name=String(row[map.name]??"").trim(); if(!name)return;
+            const quantity=Math.max(0,Number(String(row[map.quantity]??0).replace(",","."))||0);
+            const sectionName=String(row[map.section]??"").trim()||"المخزن العام";
+            const sectionCode=String(row[map.sectionCode]??"").trim().toLowerCase()||slugCode(sectionName);
+            let category=db.categories.find(c=>c.name===sectionName||String(c.code).toLowerCase()===sectionCode);
+            if(!category){category={id:makeId(db.categories),name:sectionName,code:sectionCode};db.categories.push(category);}
+            const code=String(row[map.code]??"").trim();
+            let product=db.products.find(p=>code?p.code===code:(p.name===name&&p.categoryId===category.id));
+            if(product){product.name=name;product.categoryId=category.id;product.usagePlace=String(row[map.usagePlace]??product.usagePlace??"").trim();if(code)product.code=code;const hasMoves=(db.receipts||[]).some(r=>Number(r.productId)===Number(product.id))||(db.issues||[]).some(i=>getIssueItems(i).some(it=>Number(it.productId)===Number(product.id)));if(!hasMoves)product.openingBalance=quantity;updated++;}
+            else {const id=makeId(db.products);db.products.push({id,code:code||String(id).padStart(4,"0"),name,categoryId:category.id,openingBalance:quantity,usagePlace:String(row[map.usagePlace]??"").trim(),image:"",price:0});added++;}
+        });
+        saveDB(); selectedCategoryId=db.categories[0]?.id||null; render(); notify(`تم استيراد الأصناف: إضافة ${added} وتحديث ${updated}`);
+    }catch(e){console.error(e);notify("تعذر قراءة ملف Excel. استخدم XLSX أو CSV بالعناوين: الكود، اسم الصنف، القسم، الكمية، مكان الاستخدام","error");}
+    event.target.value="";
+}
+
+function notify(
+    message,
+    type="success"
+) {
+
+    const old =
+        document.querySelector(
+            ".toast-message"
+        );
+
+    if (old) old.remove();
+
+    const toast =
+        document.createElement("div");
+
+    toast.className =
+        "toast-message";
+
+    toast.textContent =
+        message;
+
+    Object.assign(
+        toast.style,
+        {
+            position:"fixed",
+            bottom:"22px",
+            right:"22px",
+            zIndex:5000,
+            padding:"14px 20px",
+            borderRadius:"12px",
+            color:"#fff",
+            background:
+                type === "error"
+                ? "#dc2626"
+                : "#16a34a",
+            boxShadow:
+                "0 10px 30px rgba(0,0,0,.2)"
+        }
+    );
+
+    document.body.appendChild(toast);
+
+    setTimeout(
+        () => toast.remove(),
+        3000
+    );
+}
+
+function showModal(html) {
+
+    closeModal();
+
+    const wrapper =
+        document.createElement("div");
+
+    wrapper.id =
+        "modalRoot";
+
+    wrapper.className =
+        "modal-backdrop";
+
+    wrapper.innerHTML =
+        html;
+
+    wrapper.addEventListener(
+        "click",
+        event => {
+
+            if (
+                event.target === wrapper
+            ) {
+                closeModal();
+            }
+
+        }
+    );
+
+    document.body.appendChild(
+        wrapper
+    );
+}
+
+function closeModal() {
+
+    document
+        .getElementById("modalRoot")
+        ?.remove();
+
+    removeCurrentProductImage =
+        false;
+}
+
+function header(
+    title,
+    subtitle=""
+) {
+
+    return `
+
+        <div class="topbar">
+
+            <div class="brand">
+
+                <div class="brand-logo">
+                    🍽️
+                </div>
+
+                <div>
+
+                    <div>
+                        ${escapeHTML(title)}
+                    </div>
+
+                    ${
+                        subtitle
+                        ? `
+                            <small style="opacity:.8">
+                                ${escapeHTML(subtitle)}
+                            </small>
+                        `
+                        : ""
+                    }
+
+                </div>
+
+            </div>
+
+            <div class="user-area">
+
+                <span>
+                    👤
+                    ${escapeHTML(
+                        currentUser?.name ||
+                        currentUser?.username ||
+                        ""
+                    )}
+                </span>
+
+                <button
+                    class="btn light small"
+                    onclick="logout()">
+                    تسجيل الخروج
+                </button>
+
+            </div>
+
+        </div>
+
+    `;
+}
+
+/* =========================
+   التوجيه
+========================= */
+
+function render() {
+
+    const app =
+        document.getElementById("app");
+
+    if (!currentUser) {
+
+        app.innerHTML =
+            renderLogin();
+
+        return;
+    }
+
+    if (
+        currentUser.role === "admin"
+    ) {
+
+        if (
+            currentPage === "cashier"
+        ) {
+
+            app.innerHTML =
+                renderCashier();
+
+        } else if (
+            currentPage === "settings"
+        ) {
+
+            app.innerHTML =
+                renderSettings();
+
+        } else if (currentPage === "incoming") {
+
+            app.innerHTML = renderIncoming();
+
+        } else if (currentPage === "reports") {
+
+            app.innerHTML = renderReports();
+
+        } else {
+
+            app.innerHTML =
+                renderAdminHome();
+        }
+
+        return;
+    }
+
+    app.innerHTML =
+        renderCashier();
+}
+
+function go(page) {
+
+    currentPage =
+        page;
+
+    render();
+}
+
+function logout() {
+
+    if (
+        cart.length &&
+        !confirm(
+            "توجد أصناف داخل الفاتورة الحالية. هل تريد تسجيل الخروج؟"
+        )
+    ) {
+
+        return;
+    }
+
+    currentUser =
+        null;
+
+    currentPage =
+        "login";
+
+    cart = [];
+
+    render();
+}
+
+/* =========================
+   تسجيل الدخول
+========================= */
+
+function renderLogin() {
+
+    return `
+
+        <main class="login-screen">
+
+            <section class="login-card">
+
+                <div class="login-logo">
+                    🧾
+                </div>
+
+                <h1>
+                    نقطة بيع المطعم
+                </h1>
+
+                <p>
+                    سجّل الدخول للمتابعة إلى النظام
+                </p>
+
+                <div id="loginAlert"></div>
+
+                <form
+                    onsubmit="login(event)">
+
+                    <div class="form-group">
+
+                        <label>
+                            اسم المستخدم
+                        </label>
+
+                        <input
+                            id="loginUsername"
+                            class="form-control"
+                            required
+                            autocomplete="username">
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>
+                            كلمة المرور
+                        </label>
+
+                        <input
+                            id="loginPassword"
+                            type="password"
+                            class="form-control"
+                            required
+                            autocomplete="current-password">
+
+                    </div>
+
+                    <button
+                        class="btn"
+                        style="width:100%">
+                        دخول إلى البرنامج
+                    </button>
+
+                </form>
+
+                <div
+                    class="muted"
+                    style="
+                        font-size:12px;
+                        margin-top:20px;
+                        text-align:center
+                    ">
+
+                    المدير الافتراضي:
+                    admin / admin
+
+                </div>
+
+            </section>
+
+        </main>
+
+    `;
+}
+
+function login(event) {
+
+    event.preventDefault();
+
+    const username =
+        document
+        .getElementById(
+            "loginUsername"
+        )
+        .value
+        .trim();
+
+    const password =
+        document
+        .getElementById(
+            "loginPassword"
+        )
+        .value;
+
+    const user =
+        db.users.find(
+            item =>
+                item.username === username &&
+                item.password === password
+        );
+
+    if (!user) {
+
+        document
+            .getElementById(
+                "loginAlert"
+            )
+            .innerHTML = `
+
+                <div class="alert alert-danger">
+                    اسم المستخدم أو كلمة المرور غير صحيحة
+                </div>
+
+            `;
+
+        return;
+    }
+
+    currentUser =
+        user;
+
+    currentPage =
+        user.role === "admin"
+        ? "adminHome"
+        : "cashier";
+
+    selectedCategoryId =
+        db.categories[0]?.id || null;
+
+    render();
+}
+
+/* =========================
+   لوحة المدير
+========================= */
+
+function renderAdminHome(){
+    return `${header("لوحة تحكم المدير","إدارة وتشغيل المخزن")}
+    <main class="container">
+        <div class="page-title"><div><h2>مرحبًا بك، ${escapeHTML(currentUser.name)}</h2><div class="muted">إدارة المخازن والأصناف وأذونات الصرف</div></div></div>
+        <div class="admin-menu">
+            <button class="menu-card menu-blue" onclick="go('cashier')"><div class="icon">📋</div><h3>إذن صرف</h3><p>إنشاء إذن صرف وخصم الكميات من المخزون</p></button>
+            <button class="menu-card menu-purple" onclick="go('settings')"><div class="icon">⚙️</div><h3>إعدادات البرنامج</h3><p>إدارة المخازن والأصناف والمستخدمين</p></button>
+            <button class="menu-card menu-green" onclick="go('incoming')"><div class="icon">📥</div><h3>إذن وارد</h3><p>تسجيل الوارد كحركة مستقلة للمخزون</p></button>
+            <button class="menu-card menu-blue" onclick="go('reports')"><div class="icon">📊</div><h3>تقارير المخزون</h3><p>تقارير الوارد والمنصرف والأرصدة</p></button>
+            <button class="menu-card menu-purple" onclick="openHistory()"><div class="icon">📚</div><h3>أذونات الصرف السابقة</h3><p>عرض وطباعة وحذف الأذونات</p></button>
+            <button class="menu-card menu-orange" onclick="backupData()"><div class="icon">💾</div><h3>نسخة احتياطية</h3><p>تصدير جميع بيانات النظام إلى ملف</p></button>
+        </div>
+        <div class="card panel" style="margin-top:25px">
+            <h3>ملخص سريع</h3>
+            <div class="settings-grid">
+                <div><div class="muted">عدد المخازن / الأقسام</div><h2>${db.categories.length}</h2></div>
+                <div><div class="muted">عدد الأصناف</div><h2>${db.products.length}</h2></div>
+                <div><div class="muted">عدد أذونات الصرف</div><h2>${db.issues.length}</h2></div>
+                <div><div class="muted">إجمالي الأرصدة الحالية</div><h2>${db.products.reduce((sum,p)=>sum+getCurrentStock(p),0)}</h2></div>
+                <div><div class="muted">إجمالي الوارد</div><h2>${(db.receipts||[]).reduce((sum,r)=>sum+Number(r.qty||0),0)}</h2></div>
+                <div><div class="muted">إجمالي المنصرف</div><h2>${(db.issues||[]).reduce((sum,i)=>sum+getIssueItems(i).reduce((n,x)=>n+Number(x.qty||0),0),0)}</h2></div>
+            </div>
+        </div>
+    </main>`;
+}
+
+/* =========================
+   صفحة الكاشير
+========================= */
+
+function renderCashier(){
+    const category=categoryById(selectedCategoryId);
+    const products=db.products.filter(p=>p.categoryId===selectedCategoryId);
+    const nextNo=nextIssueNumber(selectedCategoryId,false);
+    return `${header("إذن صرف", escapeHTML(category?.name||"اختر المخزن"))}
+    <main class="container">
+        ${currentUser.role==='admin'?`<div style="margin-bottom:15px"><button class="btn secondary small" onclick="go('adminHome')">← لوحة المدير</button></div>`:""}
+        <div class="pos-layout">
+            <aside class="card panel"><div class="panel-title"><h3>المخازن / الأقسام</h3></div><div class="categories-list">
+                ${db.categories.length?db.categories.map(c=>`<button class="category-item ${c.id===selectedCategoryId?'active':''}" onclick="selectCategory(${c.id})">${escapeHTML(c.name)} <span class="muted">(${escapeHTML(c.code||'')})</span></button>`).join(''):`<div class="empty">لا توجد مخازن</div>`}
+            </div></aside>
+            <main class="card panel">
+                <div class="product-header"><div><h2>${escapeHTML(category?.name||'اختر مخزنًا')}</h2><span class="muted">${products.length} صنف — رقم الإذن التالي: <b>${escapeHTML(nextNo)}</b></span></div></div>
+                <div class="products-grid">
+                    ${products.length?products.map(product=>{const stock=getCurrentStock(product);const inCart=cart.find(i=>i.productId===product.id)?.qty||0;const available=Math.max(0,stock-inCart);const out=stock<=0;return `<div class="product-card ${out?'out-of-stock':''}" onclick="${out?`stockEnded(${product.id})`:`openIssueQuantityDialog(${product.id})`}">
+                        <div class="product-image">${product.image?`<img src="${escapeHTML(product.image)}" alt="${escapeHTML(product.name)}">`:`<div class="product-image-placeholder">📦</div>`}</div>
+                        <h4>${escapeHTML(product.name)}</h4>
+                        <div class="stock-only">الكمية: ${stock}</div>
+                        <div class="${out?'stock-badge out':'stock-badge'}">${out?'⛔ المخزون انتهى':`متاح للصرف: ${available}`}</div>
+                        <button class="btn success small" style="width:100%;margin-top:10px" ${out||available<=0?'disabled':''} onclick="event.stopPropagation();${out?`stockEnded(${product.id})`:`openIssueQuantityDialog(${product.id})`}">${out?'المخزون انتهى':available<=0?'الحد الأقصى':'إضافة للصرف'}</button>
+                    </div>`}).join(''):`<div class="empty">لا توجد أصناف في هذا المخزن</div>`}
+                </div>
+            </main>
+            <aside class="card panel invoice">
+                <div class="invoice-header"><h3>📋 إذن الصرف</h3><div class="invoice-number">${escapeHTML(nextNo)}</div></div>
+                <div class="muted" style="margin:8px 0">المخزن: <b>${escapeHTML(category?.name||'-')}</b></div>
+                <div class="invoice-items">
+                    ${cart.length?cart.map(item=>{const p=db.products.find(x=>x.id===item.productId);const stock=getCurrentStock(p);return `<div class="invoice-item"><div><div class="invoice-item-name">${escapeHTML(item.name)}</div><div class="invoice-item-price">الكمية المطلوبة: ${item.qty} — الرصيد الحالي: ${stock}</div><div class="qty-controls"><button class="qty-btn" ${item.qty>=stock?'disabled':''} onclick="changeQty(${item.productId},1)">+</button><span>${item.qty}</span><button class="qty-btn" onclick="changeQty(${item.productId},-1)">−</button><button class="btn danger small" onclick="removeFromCart(${item.productId})">حذف</button></div></div></div>`}).join(''):`<div class="empty">لم يتم اختيار أصناف</div>`}
+                </div>
+                <div class="invoice-footer">
+                    <div class="total-row"><span>إجمالي الكمية</span><span class="total-value">${totalCartQty()}</span></div>
+                    <button class="btn success" onclick="checkout()">✅ إتمام الصرف وحفظ الإذن</button>
+                    <button class="btn" onclick="openPrintOptions()">🖨️ طباعة إذن الصرف</button>
+                    <button class="btn secondary" onclick="openHistory()">📚 الأذونات السابقة</button>
+                    <button class="btn danger" onclick="clearInvoice()">❌ إلغاء الإذن</button>
+                </div>
+            </aside>
+        </div>
+    </main>`;
+}
+
+function selectCategory(id) {
+
+    selectedCategoryId =
+        Number(id);
+
+    render();
+}
+
+function addToCart(productId, quantity=1){
+    const product=db.products.find(p=>p.id===Number(productId));
+    if(!product)return;
+
+    const stock=getCurrentStock(product);
+    if(stock<=0){stockEnded(productId);return;}
+
+    const qty=Math.floor(Number(quantity));
+    if(!Number.isFinite(qty)||qty<=0){notify("أدخل كمية صحيحة أكبر من صفر",'error');return;}
+
+    const existing=cart.find(i=>i.productId===product.id);
+    const current=existing?Number(existing.qty):0;
+    const requestedTotal=current+qty;
+
+    if(requestedTotal>stock){
+        notify(`الكمية المطلوبة أكبر من رصيد "${product.name}". المطلوب إضافته: ${qty}، المتاح: ${Math.max(0,stock-current)}`,'error');
+        return;
+    }
+
+    if(existing) existing.qty=requestedTotal;
+    else cart.push({productId:product.id,code:getProductCode(product),name:product.name,qty,usagePlace:product.usagePlace||""});
+
+    render();
+}
+
+function openIssueQuantityDialog(productId){
+    const product=db.products.find(p=>p.id===Number(productId));
+    if(!product)return;
+
+    const stock=getCurrentStock(product);
+    if(stock<=0){stockEnded(productId);return;}
+
+    const existing=cart.find(i=>i.productId===product.id);
+    const current=existing?Number(existing.qty):0;
+    const available=Math.max(0,stock-current);
+
+    if(available<=0){
+        notify(`تم الوصول إلى كامل رصيد "${product.name}" داخل إذن الصرف الحالي`,'error');
+        return;
+    }
+
+    showModal(`
+        <div class="modal" style="max-width:520px">
+            <div class="modal-header">
+                <h3>إضافة كمية إلى إذن الصرف</h3>
+                <button class="close" onclick="closeModal()">×</button>
+            </div>
+
+            <div class="invoice-detail-grid" style="margin-bottom:14px">
+                <div class="invoice-detail-box">
+                    الصنف
+                    <strong>${escapeHTML(product.name)}</strong>
+                </div>
+                <div class="invoice-detail-box">
+                    الرصيد الحالي
+                    <strong>${stock}</strong>
+                </div>
+                <div class="invoice-detail-box">
+                    المضاف حاليًا للإذن
+                    <strong>${current}</strong>
+                </div>
+                <div class="invoice-detail-box">
+                    المتاح للإضافة
+                    <strong>${available}</strong>
+                </div>
+            </div>
+
+            <form onsubmit="confirmIssueQuantity(event,${product.id})">
+                <div class="form-group">
+                    <label>الكمية المطلوبة للصرف</label>
+                    <input
+                        id="issueQuantityInput"
+                        class="form-control"
+                        type="number"
+                        min="1"
+                        max="${available}"
+                        step="1"
+                        value="1"
+                        inputmode="numeric"
+                        autocomplete="off"
+                        required
+                        autofocus>
+                    <div class="muted" style="margin-top:7px;font-size:12px">
+                        يمكنك كتابة أي كمية حتى ${available} بدل الضغط على الصنف عدة مرات.
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn success" type="submit">إضافة الكمية</button>
+                    <button class="btn light" type="button" onclick="closeModal()">إلغاء</button>
+                </div>
+            </form>
+        </div>
+    `);
+
+    setTimeout(()=>{
+        const input=document.getElementById('issueQuantityInput');
+        if(input){input.focus();input.select();}
+    },80);
+}
+
+function confirmIssueQuantity(event,productId){
+    event.preventDefault();
+
+    const product=db.products.find(p=>p.id===Number(productId));
+    if(!product){closeModal();return;}
+
+    const input=document.getElementById('issueQuantityInput');
+    const quantity=Math.floor(Number(input?.value));
+    const stock=getCurrentStock(product);
+    const existing=cart.find(i=>i.productId===product.id);
+    const current=existing?Number(existing.qty):0;
+    const available=Math.max(0,stock-current);
+
+    if(!Number.isFinite(quantity)||quantity<=0){
+        notify("أدخل كمية صحيحة أكبر من صفر",'error');
+        input?.focus();
+        return;
+    }
+
+    if(quantity>available){
+        notify(`الكمية المطلوبة (${quantity}) أكبر من المتاح للصرف (${available}) للصنف "${product.name}"`,'error');
+        input?.focus();
+        input?.select();
+        return;
+    }
+
+    closeModal();
+    addToCart(product.id,quantity);
+}
+
+function changeQty(productId,change){
+    const item=cart.find(i=>i.productId===Number(productId)); if(!item)return;
+    const p=db.products.find(x=>x.id===Number(productId)); const stock=getCurrentStock(p);
+    if(change>0&&item.qty+change>stock){notify(`الكمية المطلوبة أكبر من رصيد "${p?.name||item.name}" (${stock})`,'error');return;}
+    item.qty+=change; if(item.qty<=0) cart=cart.filter(i=>i.productId!==Number(productId)); render();
+}
+
+function removeFromCart(productId) {
+
+    cart =
+        cart.filter(
+            item =>
+                item.productId !==
+                Number(productId)
+        );
+
+    render();
+}
+
+function cartTotal(){return totalCartQty();}
+
+function clearInvoice() {
+
+    if (!cart.length) return;
+
+    if (
+        confirm(
+            "هل تريد إلغاء الفاتورة الحالية؟"
+        )
+    ) {
+
+        cart = [];
+
+        render();
+    }
+}
+
+function localDateToISO(dateValue){
+    const value=String(dateValue||'').trim();
+    if(!value) return new Date().toISOString();
+    const parts=value.split('-').map(Number);
+    if(parts.length===3 && parts.every(Number.isFinite)){
+        const d=new Date(parts[0],parts[1]-1,parts[2],12,0,0,0);
+        if(!Number.isNaN(d.getTime())) return d.toISOString();
+    }
+    return new Date().toISOString();
+}
+function todayLocalDate(){
+    const d=new Date();
+    const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
+    return `${y}-${m}-${day}`;
+}
+
+function openIssueDetailsDialog(onConfirm, initial={}){
+    showModal(`<div class="modal" style="width:min(620px,100%)">
+        <div class="modal-header"><h3>بيانات إذن الصرف</h3><button class="close" onclick="closeModal()">×</button></div>
+        <div class="muted" style="margin-bottom:14px">هذه البيانات مطلوبة قبل حفظ أو طباعة الإذن.</div>
+        <form onsubmit="confirmIssueDetails(event)">
+            <div class="form-group"><label>تاريخ الإذن *</label><input id="issueDate" type="date" class="form-control" required max="${todayLocalDate()}" value="${escapeHTML(initial.date ? new Date(initial.date).toISOString().slice(0,10) : todayLocalDate())}"></div>
+            <div class="form-group"><label>مكان الاستخدام *</label><input id="issueUsagePlace" class="form-control" required value="${escapeHTML(initial.usagePlace||'')}" placeholder="مثال: مبنى الإدارة / ورشة الكهرباء"></div>
+            <div class="form-group"><label>اسم المستلم *</label><input id="issueReceiverName" class="form-control" required value="${escapeHTML(initial.receiverName||'')}" placeholder="اسم المستلم"></div>
+            <div class="form-group"><label>كود المستلم *</label><input id="issueReceiverCode" class="form-control" required value="${escapeHTML(initial.receiverCode||'')}" placeholder="كود المستلم"></div>
+            <div class="modal-footer"><button class="btn success">حفظ البيانات والمتابعة</button><button type="button" class="btn light" onclick="closeModal()">إلغاء</button></div>
+        </form>
+    </div>`);
+    window.pendingIssueDetailsCallback=onConfirm;
+}
+
+function confirmIssueDetails(event){
+    event.preventDefault();
+    const details={
+        date:document.getElementById('issueDate').value,
+        usagePlace:document.getElementById('issueUsagePlace').value.trim(),
+        receiverName:document.getElementById('issueReceiverName').value.trim(),
+        receiverCode:document.getElementById('issueReceiverCode').value.trim()
+    };
+    if(!details.date||!details.usagePlace||!details.receiverName||!details.receiverCode){notify('يرجى إدخال جميع البيانات المطلوبة','error');return;}
+    const callback=window.pendingIssueDetailsCallback;
+    window.pendingIssueDetailsCallback=null;
+    closeModal();
+    if(typeof callback==='function') callback(details);
+}
+
+function checkout(){
+    if(!cart.length){notify("أضف صنفًا واحدًا على الأقل إلى إذن الصرف",'error');return;}
+    const section=categoryById(selectedCategoryId);
+    const errors=[];
+    cart.forEach(item=>{
+        const p=db.products.find(x=>x.id===item.productId);
+        const stock=getCurrentStock(p);
+        if(!p)errors.push(`الصنف "${item.name}" غير موجود`);
+        else if(Number(item.qty)>stock)errors.push(`الصنف "${p.name}": المطلوب ${item.qty} والمتاح ${stock}`);
+    });
+    if(errors.length){notify('لا يمكن حفظ الإذن: '+errors.join(' | '),'error');render();return;}
+    openIssueDetailsDialog(details=>{
+        // إعادة التحقق من المخزون بعد إغلاق الحوار قبل إنشاء الحركة.
+        const finalErrors=[];
+        cart.forEach(item=>{
+            const p=db.products.find(x=>x.id===item.productId);
+            const stock=getCurrentStock(p);
+            if(!p) finalErrors.push(`الصنف "${item.name}" غير موجود`);
+            else if(Number(item.qty)>stock) finalErrors.push(`الصنف "${p.name}": المطلوب ${item.qty} والمتاح ${stock}`);
+        });
+        if(finalErrors.length){notify('لا يمكن حفظ الإذن: '+finalErrors.join(' | '),'error');render();return;}
+        const number=nextIssueNumber(selectedCategoryId,true);
+        const issue={id:makeId(db.issues),number,issueNumber:number,date:localDateToISO(details.date),cashier:currentUser.username,sectionId:selectedCategoryId,sectionName:section?.name||'',sectionCode:section?.code||'',items:clone(cart),type:'outgoing',usagePlace:details.usagePlace,receiverName:details.receiverName,receiverCode:details.receiverCode};
+        issue.items.forEach(item=>{ if(!item.usagePlace) item.usagePlace=details.usagePlace; });
+        db.issues.unshift(issue);
+        db.invoices=db.issues;
+        db.invoiceCounter=(Number(db.invoiceCounter)||0)+1;
+        saveDB(); cart=[]; render(); notify(`تم حفظ إذن الصرف ${number} وتسجيل المنصرف`);
+    });
+}
+
+/* =========================
+   الطباعة
+========================= */
+
+function openPrintOptions(){
+    if(!cart.length){notify("لا توجد أصناف في إذن الصرف",'error');return;}
+    showModal(`<div class="modal"><div class="modal-header"><h3>اختر طريقة الطباعة</h3><button class="close" onclick="closeModal()">×</button></div><div class="print-options"><button class="print-option" onclick="printIssue('a4')">📄<br>طباعة A4</button><button class="print-option" onclick="printIssue('80mm')">🧾<br>طباعة 80mm</button><button class="print-option" onclick="printIssue('a4')">📄<br>حفظ PDF من الطباعة</button></div><div class="modal-footer"><button class="btn light" onclick="closeModal()">إلغاء</button></div></div>`);
+}
+
+function receiptHTML(issue,size){
+    const category=categoryById(issue.sectionId)||{name:issue.sectionName||'',code:issue.sectionCode||''};
+    const s=db.settings;
+    return `<div class="issue-slip ${size==='a4'?'a4':'small80'}">
+        <div class="issue-head-title">إذن صرف من مخزن ${escapeHTML(category.name||'')}</div>
+        <div class="issue-meta"><div class="right">القسم / <span class="issue-line">${escapeHTML(category.name||'')}</span><br>مكان الاستخدام / <span class="issue-line">${escapeHTML(issue.usagePlace||'')}</span></div><div class="left">رقم الإذن / <span class="issue-line">${escapeHTML(issue.number||'')}</span><br>التاريخ / <span class="issue-line">${new Date(issue.date).toLocaleDateString('ar-EG')}</span></div></div>
+        <table class="issue-table"><thead><tr><th class="code">الكود</th><th class="name">اسم الصنف</th><th class="qty">الكمية</th><th class="place">مكان الاستخدام</th></tr></thead><tbody>
+            ${issue.items.map(item=>`<tr><td>${escapeHTML(item.code||'')}</td><td>${escapeHTML(item.name||'')}</td><td>${Number(item.qty||0)}</td><td>${escapeHTML(item.usagePlace||issue.usagePlace||'')}</td></tr>`).join('')}
+            ${Array.from({length:Math.max(0,8-issue.items.length)},()=>'<tr><td>&nbsp;</td><td></td><td></td><td></td></tr>').join('')}
+        </tbody></table>
+        <div class="issue-bottom">
+            <div>اسم المستلم / <span class="issue-line">${escapeHTML(issue.receiverName||s.receiverName||issue.cashier||'')}</span><br>كود المستلم / <span class="issue-line">${escapeHTML(issue.receiverCode||s.receiverCode||'')}</span></div>
+            <div>اعتماد / <span class="issue-line">${escapeHTML(s.approver||'')}</span><br>أمين المخزن / <span class="issue-line">${escapeHTML(s.storekeeper||'')}</span></div>
+        </div>
+        ${s.footer?`<div style="text-align:center;margin-top:12px;font-size:11px">${escapeHTML(s.footer)}</div>`:''}
+    </div>`;
+}
+
+function createQRDataURL(text) {
+
+    const safe =
+        escapeHTML(
+            text.slice(0,180)
+        );
+
+    return `
+
+        <div style="
+            width:125px;
+            height:125px;
+            margin:auto;
+            border:5px solid #000;
+            display:grid;
+            place-items:center;
+            padding:5px;
+            background:
+            repeating-linear-gradient(
+                45deg,
+                #000 0 3px,
+                #fff 3px 7px
+            ),
+            repeating-linear-gradient(
+                -45deg,
+                transparent 0 4px,
+                #000 4px 6px
+            );
+        ">
+
+            <div style="
+                background:#fff;
+                color:#000;
+                padding:3px;
+                font-size:8px;
+                line-height:1.1;
+                word-break:break-all;
+                max-height:100%;
+                overflow:hidden;
+            ">
+
+                ${safe}
+
+            </div>
+
+        </div>
+
+    `;
+}
+
+function barcodeSVG(value) {
+
+    let x = 2;
+
+    let bars = "";
+
+    for (
+        let i = 0;
+        i < value.length;
+        i++
+    ) {
+
+        const code =
+            value.charCodeAt(i);
+
+        const width =
+            (code % 3) + 1;
+
+        const gap =
+            ((code >> 2) % 3) + 1;
+
+        bars += `
+
+            <rect
+                x="${x}"
+                y="3"
+                width="${width}"
+                height="45"
+                fill="#000"/>
+
+        `;
+
+        x +=
+            width +
+            gap;
+    }
+
+    return `
+
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="${Math.max(
+                180,
+                x + 5
+            )}"
+            height="55"
+            viewBox="0 0 ${
+                Math.max(
+                    180,
+                    x + 5
+                )
+            } 55">
+
+            <rect
+                width="100%"
+                height="100%"
+                fill="#fff"/>
+
+            ${bars}
+
+        </svg>
+
+    `;
+}
+
+function invoiceFromCart() {
+
+    return {
+
+        number:
+            db.invoiceCounter,
+
+        date:
+            new Date().toISOString(),
+
+        items:
+            clone(cart),
+
+        total:
+            cartTotal()
+
+    };
+}
+
+function printInvoice(numberOrSize,size){
+    let issue;
+    let printSize=size;
+    if(typeof numberOrSize==='string' && (numberOrSize==='a4'||numberOrSize==='80mm')){
+        printSize=numberOrSize;
+        issue={number:nextIssueNumber(selectedCategoryId,false),date:new Date().toISOString(),sectionId:selectedCategoryId,sectionName:categoryById(selectedCategoryId)?.name||'',sectionCode:categoryById(selectedCategoryId)?.code||'',cashier:currentUser?.username||'',items:clone(cart)};
+    }else{
+        issue=db.issues.find(x=>String(x.number)===String(numberOrSize));
+        if(!issue)return;
+        printSize=printSize||'a4';
+        if(!issue.date || !issue.usagePlace || !issue.receiverName || !issue.receiverCode){
+            openIssueDetailsDialog(details=>{
+                issue.date=localDateToISO(details.date); issue.usagePlace=details.usagePlace; issue.receiverName=details.receiverName; issue.receiverCode=details.receiverCode;
+                issue.items=(issue.items||[]).map(item=>({...item,usagePlace:item.usagePlace||details.usagePlace}));
+                saveDB();
+                closeModal();
+                const printArea=document.createElement('div'); printArea.id='printArea'; printArea.innerHTML=receiptHTML(issue,printSize); document.body.appendChild(printArea); setTimeout(()=>{window.print();setTimeout(()=>printArea.remove(),800)},250);
+            },issue);
+            return;
+        }
+    }
+    closeModal(); const printArea=document.createElement('div'); printArea.id='printArea'; printArea.innerHTML=receiptHTML(issue,printSize); document.body.appendChild(printArea); setTimeout(()=>{window.print();setTimeout(()=>printArea.remove(),800)},250);
+}
+
+function viewInvoiceDetails(number){
+    const issue=db.issues.find(x=>String(x.number)===String(number));
+    if(!issue){notify('الإذن غير موجود','error');return;}
+    showModal(`<div class="modal" style="width:min(900px,100%)"><div class="modal-header"><h3>تفاصيل إذن الصرف ${escapeHTML(issue.number)}</h3><button class="close" onclick="closeModal()">×</button></div><div class="invoice-detail-grid"><div class="invoice-detail-box">رقم الإذن<strong>${escapeHTML(issue.number)}</strong></div><div class="invoice-detail-box">المخزن<strong>${escapeHTML(issue.sectionName||'-')}</strong></div><div class="invoice-detail-box">التاريخ<strong>${new Date(issue.date).toLocaleString('ar-EG')}</strong></div><div class="invoice-detail-box">المستخدم<strong>${escapeHTML(issue.cashier||'-')}</strong></div></div><div class="table-wrap"><table style="min-width:0"><thead><tr><th>الكود</th><th>الصنف</th><th>رصيد أول المدة</th><th>الرصيد الحالي</th><th>مكان الاستخدام</th></tr></thead><tbody>${getIssueItems(issue).map(i=>`<tr><td>${escapeHTML(i.code||'')}</td><td>${escapeHTML(i.name||'')}</td><td>${Number(i.qty||0)}</td><td>${escapeHTML(i.usagePlace||'')}</td></tr>`).join('')}</tbody></table></div><div class="modal-footer"><button class="btn" onclick="printSavedInvoice('${escapeHTML(issue.number)}','a4')">🖨️ طباعة</button><button class="btn light" onclick="openHistory()">← العودة</button></div></div>`);
+}
+function deleteInvoice(number){
+    const issue=db.issues.find(x=>String(x.number)===String(number));
+    if(!issue){notify('الإذن غير موجود','error');return;}
+    if(!confirm(`هل تريد حذف إذن الصرف ${issue.number}؟ سيتم إعادة الكميات المصروفة إلى المخزون.`))return;
+    db.issues=db.issues.filter(x=>String(x.number)!==String(number));
+    db.invoices=db.issues;
+    saveDB();
+    notify('تم حذف إذن الصرف، وتمت إعادة احتساب الرصيد تلقائيًا');
+    renderHistoryModal();
+}
+
+function printIssue(size){
+    if(!cart.length){notify("لا توجد أصناف في إذن الصرف",'error');return;}
+    const section=categoryById(selectedCategoryId);
+    openIssueDetailsDialog(details=>{
+        const issue={number:nextIssueNumber(selectedCategoryId,false),date:localDateToISO(details.date),sectionId:selectedCategoryId,sectionName:section?.name||"",sectionCode:section?.code||"",cashier:currentUser?.username||"",items:clone(cart),...details};
+        issue.items.forEach(item=>{if(!item.usagePlace)item.usagePlace=details.usagePlace;});
+        closeModal();
+        const printArea=document.createElement('div');
+        printArea.id='printArea';
+        printArea.innerHTML=receiptHTML(issue,size||'a4');
+        document.body.appendChild(printArea);
+        setTimeout(()=>{window.print();setTimeout(()=>printArea.remove(),800)},250);
+    });
+}
+
+function saveInvoicePDF(number){
+    const issue=db.issues.find(x=>String(x.number)===String(number));
+    if(!issue){notify("الإذن غير موجود",'error');return;}
+    notify("استخدم مربع الطباعة واختر Save as PDF من الطابعة لحفظ الإذن كملف PDF");
+    printSavedInvoice(number,'a4');
+}
+
+/* =========================
+   سجل الفواتير
+========================= */
+
+function openHistory(){showModal(`<div class="modal" style="width:min(1000px,100%)"><div class="modal-header"><h3>📚 أذونات الصرف السابقة</h3><button class="close" onclick="closeModal()">×</button></div><input class="form-control" id="historySearch" placeholder="ابحث برقم الإذن أو التاريخ أو المستخدم..." oninput="renderHistoryModal()"><div id="historyModalList" style="margin-top:15px"></div></div>`);renderHistoryModal();}
+
+function renderHistoryModal(){
+    const target=document.getElementById('historyModalList');if(!target)return;
+    const search=(document.getElementById('historySearch')?.value||'').toLowerCase();
+    const issues=db.issues.filter(issue=>[issue.number,issue.sectionName,issue.cashier,new Date(issue.date).toLocaleString('ar-EG')].join(' ').toLowerCase().includes(search));
+    target.innerHTML=issues.length?issues.map(issue=>`<div class="card invoice-history-card" style="margin-bottom:10px"><h3>إذن صرف رقم ${escapeHTML(issue.number)}</h3><div class="muted">${new Date(issue.date).toLocaleString('ar-EG')} — المخزن: ${escapeHTML(issue.sectionName||'-')} — المستخدم: ${escapeHTML(issue.cashier||'-')}</div><p>إجمالي الكمية: ${getIssueItems(issue).reduce((s,i)=>s+Number(i.qty||0),0)}</p><div class="actions"><button class="btn small" onclick="viewInvoiceDetails('${escapeHTML(issue.number)}')">👁️ عرض البيانات</button><button class="btn small" onclick="printSavedInvoice('${escapeHTML(issue.number)}','a4')">🖨️ طباعة A4</button><button class="btn success small" onclick="saveInvoicePDF('${escapeHTML(issue.number)}')">📄 حفظ PDF</button><button class="btn secondary small" onclick="printSavedInvoice('${escapeHTML(issue.number)}','80mm')">طباعة 80mm</button><button class="btn danger small" onclick="deleteInvoice('${escapeHTML(issue.number)}')">🗑️ حذف الإذن</button></div></div>`).join(''):`<div class="empty">لا توجد أذونات مطابقة</div>`;
+}
+
+function printSavedInvoice(numberOrSize,size){
+    let issue;
+    let printSize=size;
+    if(typeof numberOrSize==='string' && (numberOrSize==='a4'||numberOrSize==='80mm')){
+        printSize=numberOrSize;
+        issue={number:nextIssueNumber(selectedCategoryId,false),date:new Date().toISOString(),sectionId:selectedCategoryId,sectionName:categoryById(selectedCategoryId)?.name||'',sectionCode:categoryById(selectedCategoryId)?.code||'',cashier:currentUser?.username||'',items:clone(cart)};
+    }else{
+        issue=db.issues.find(x=>String(x.number)===String(numberOrSize));
+        if(!issue)return;
+        printSize=printSize||'a4';
+        if(!issue.usagePlace || !issue.receiverName || !issue.receiverCode){
+            openIssueDetailsDialog(details=>{
+                issue.usagePlace=details.usagePlace; issue.receiverName=details.receiverName; issue.receiverCode=details.receiverCode;
+                issue.items=(issue.items||[]).map(item=>({...item,usagePlace:item.usagePlace||details.usagePlace}));
+                saveDB();
+                closeModal();
+                const printArea=document.createElement('div'); printArea.id='printArea'; printArea.innerHTML=receiptHTML(issue,printSize); document.body.appendChild(printArea); setTimeout(()=>{window.print();setTimeout(()=>printArea.remove(),800)},250);
+            },issue);
+            return;
+        }
+    }
+    closeModal(); const printArea=document.createElement('div'); printArea.id='printArea'; printArea.innerHTML=receiptHTML(issue,printSize); document.body.appendChild(printArea); setTimeout(()=>{window.print();setTimeout(()=>printArea.remove(),800)},250);
+}
+
+/* =========================
+   الوارد
+========================= */
+function renderIncoming(){
+    const selected=db.products.find(p=>p.id===Number(window.incomingProductId||0));
+    return `${header("إذن وارد","تسجيل حركة وارد للمخزون")}
+    <main class="container">
+      <div class="page-title"><div><h2>إضافة وارد للصنف</h2><div class="muted">كل عملية وارد تسجل كحركة مستقلة ولا تعدل الرصيد مباشرة.</div></div><button class="btn secondary" onclick="go('adminHome')">لوحة المدير ←</button></div>
+      <section class="card settings-card" style="max-width:900px;margin:auto">
+        <form onsubmit="saveIncoming(event)">
+          <div class="form-group"><label>المخزن / القسم</label><select id="incomingCategory" class="form-control" required onchange="refreshIncomingProducts()">${db.categories.map(c=>`<option value="${c.id}" ${Number(c.id)===Number(window.incomingCategoryId||selectedCategoryId)?'selected':''}>${escapeHTML(c.name)} (${escapeHTML(c.code)})</option>`).join('')}</select></div>
+          <div class="form-group"><label>الصنف</label><select id="incomingProduct" class="form-control" required onchange="window.incomingProductId=Number(this.value)">${db.products.filter(p=>p.categoryId===Number(window.incomingCategoryId||selectedCategoryId)).map(p=>`<option value="${p.id}">${escapeHTML(p.code||'')} — ${escapeHTML(p.name)} — الرصيد الحالي: ${getCurrentStock(p)}</option>`).join('')}</select></div>
+          <div class="form-group"><label>كمية الوارد</label><input id="incomingQty" type="number" min="1" step="1" class="form-control" required></div>
+          <div class="form-group"><label>تاريخ الوارد</label><input id="incomingDate" type="date" class="form-control" value="${new Date().toISOString().slice(0,10)}" required></div>
+          <div class="form-group"><label>المورد / البيان</label><input id="incomingSupplier" class="form-control" placeholder="اسم المورد أو بيان الوارد"></div>
+          <div class="form-group"><label>الملاحظات</label><textarea id="incomingNotes" class="form-control" rows="4"></textarea></div>
+          <div class="modal-footer"><button class="btn success">💾 تسجيل الوارد</button><button type="button" class="btn light" onclick="go('adminHome')">إلغاء</button></div>
+        </form>
+      </section>
+      <section class="card settings-card" style="margin-top:20px"><h3>آخر حركات الوارد</h3>${renderIncomingTable()}</section>
+    </main>`;
+}
+function refreshIncomingProducts(){
+    window.incomingCategoryId=Number(document.getElementById('incomingCategory').value);
+    window.incomingProductId=null;
+    render();
+}
+function saveIncoming(event){
+    event.preventDefault();
+    const categoryId=Number(document.getElementById('incomingCategory').value);
+    const productId=Number(document.getElementById('incomingProduct').value);
+    const qty=Number(document.getElementById('incomingQty').value);
+    const date=document.getElementById('incomingDate').value;
+    const supplier=document.getElementById('incomingSupplier').value.trim();
+    const notes=document.getElementById('incomingNotes').value.trim();
+    const product=db.products.find(p=>p.id===productId);
+    if(!product||product.categoryId!==categoryId||qty<=0||!date){notify('أدخل بيانات الوارد بشكل صحيح','error');return;}
+    db.receipts.unshift({id:makeId(db.receipts||[]),productId,categoryId,qty,date:new Date(date+'T12:00:00').toISOString(),supplier,notes,user:currentUser.username,type:'incoming'});
+    saveDB();
+    window.incomingCategoryId=categoryId; window.incomingProductId=productId;
+    render(); notify('تم تسجيل الوارد كحركة مستقلة');
+}
+function renderIncomingTable(){
+    const rows=(db.receipts||[]).slice(0,30);
+    if(!rows.length)return '<div class="empty">لا توجد حركات وارد</div>';
+    return `<div class="table-wrap"><table><thead><tr><th>التاريخ</th><th>المخزن</th><th>الكود</th><th>الصنف</th><th>الكمية</th><th>المورد / البيان</th><th>الملاحظات</th><th>إجراءات</th></tr></thead><tbody>${rows.map(r=>{
+        const p=db.products.find(x=>x.id===Number(r.productId));
+        const c=categoryById(r.categoryId);
+        return `<tr>
+          <td>${escapeHTML(new Date(r.date).toLocaleDateString('ar-EG'))}</td>
+          <td>${escapeHTML(c?.name||'-')}</td>
+          <td>${escapeHTML(p?.code||'')}</td>
+          <td>${escapeHTML(p?.name||'-')}</td>
+          <td><b>${Number(r.qty||0)}</b></td>
+          <td>${escapeHTML(r.supplier||'-')}</td>
+          <td>${escapeHTML(r.notes||'-')}</td>
+          <td class="actions">
+            <button class="btn small" onclick="editIncoming(${Number(r.id)})">✏️ تعديل</button>
+            <button class="btn danger small" onclick="deleteIncoming(${Number(r.id)})">🗑️ حذف</button>
+          </td>
+        </tr>`
+    }).join('')}</tbody></table></div>`;
+}
+
+function editIncoming(id){
+    const receipt=(db.receipts||[]).find(r=>Number(r.id)===Number(id));
+    if(!receipt){notify('حركة الوارد غير موجودة','error');return;}
+
+    showModal(`
+      <div class="modal" style="width:min(760px,100%)">
+        <div class="modal-header">
+          <h3>✏️ تعديل حركة وارد</h3>
+          <button class="close" onclick="closeModal()">×</button>
+        </div>
+        <form onsubmit="saveEditedIncoming(event,${Number(id)})">
+          <div class="form-group"><label>المخزن / القسم</label>
+            <select id="editIncomingCategory" class="form-control" required onchange="refreshEditIncomingProducts()">
+              ${db.categories.map(c=>`<option value="${c.id}" ${Number(c.id)===Number(receipt.categoryId)?'selected':''}>${escapeHTML(c.name)} (${escapeHTML(c.code)})</option>`).join('')}
+            </select>
+          </div>
+          <div class="form-group"><label>الصنف</label>
+            <select id="editIncomingProduct" class="form-control" required>
+              ${db.products.filter(p=>p.categoryId===Number(receipt.categoryId)).map(p=>`<option value="${p.id}" ${Number(p.id)===Number(receipt.productId)?'selected':''}>${escapeHTML(p.code||'')} — ${escapeHTML(p.name)}</option>`).join('')}
+            </select>
+          </div>
+          <div class="form-group"><label>كمية الوارد</label><input id="editIncomingQty" type="number" min="1" step="1" class="form-control" value="${Number(receipt.qty||0)}" required></div>
+          <div class="form-group"><label>تاريخ الوارد</label><input id="editIncomingDate" type="date" class="form-control" value="${new Date(receipt.date).toISOString().slice(0,10)}" required></div>
+          <div class="form-group"><label>المورد / البيان</label><input id="editIncomingSupplier" class="form-control" value="${escapeHTML(receipt.supplier||'')}"></div>
+          <div class="form-group"><label>الملاحظات</label><textarea id="editIncomingNotes" class="form-control" rows="4">${escapeHTML(receipt.notes||'')}</textarea></div>
+          <div class="modal-footer">
+            <button class="btn success">💾 حفظ التعديل</button>
+            <button type="button" class="btn light" onclick="closeModal()">إلغاء</button>
+          </div>
+        </form>
+      </div>`);
+}
+
+function refreshEditIncomingProducts(){
+    const categoryId=Number(document.getElementById('editIncomingCategory').value);
+    const select=document.getElementById('editIncomingProduct');
+    if(!select)return;
+    select.innerHTML=db.products.filter(p=>p.categoryId===categoryId).map(p=>`<option value="${p.id}">${escapeHTML(p.code||'')} — ${escapeHTML(p.name)}</option>`).join('');
+}
+
+function saveEditedIncoming(event,id){
+    event.preventDefault();
+    const receipt=(db.receipts||[]).find(r=>Number(r.id)===Number(id));
+    if(!receipt){notify('حركة الوارد غير موجودة','error');return;}
+
+    const categoryId=Number(document.getElementById('editIncomingCategory').value);
+    const productId=Number(document.getElementById('editIncomingProduct').value);
+    const qty=Number(document.getElementById('editIncomingQty').value);
+    const date=document.getElementById('editIncomingDate').value;
+    const supplier=document.getElementById('editIncomingSupplier').value.trim();
+    const notes=document.getElementById('editIncomingNotes').value.trim();
+    const product=db.products.find(p=>p.id===productId);
+
+    if(!product||product.categoryId!==categoryId||qty<=0||!date){notify('أدخل بيانات الوارد بشكل صحيح','error');return;}
+
+    receipt.categoryId=categoryId;
+    receipt.productId=productId;
+    receipt.qty=qty;
+    receipt.date=new Date(date+'T12:00:00').toISOString();
+    receipt.supplier=supplier;
+    receipt.notes=notes;
+    receipt.updatedAt=new Date().toISOString();
+    receipt.updatedBy=currentUser?.username||'';
+
+    saveDB();
+    closeModal();
+    render();
+    notify('تم تعديل حركة الوارد بنجاح');
+}
+
+function deleteIncoming(id){
+    const receipt=(db.receipts||[]).find(r=>Number(r.id)===Number(id));
+    if(!receipt){notify('حركة الوارد غير موجودة','error');return;}
+    const product=db.products.find(p=>p.id===Number(receipt.productId));
+    const productName=product?.name||'الصنف';
+    if(!confirm(`هل تريد حذف حركة الوارد؟\n\nالصنف: ${productName}\nالكمية: ${Number(receipt.qty||0)}\nالتاريخ: ${new Date(receipt.date).toLocaleDateString('ar-EG')}\n\nسيتم إعادة احتساب الرصيد تلقائيًا من سجل الحركات.`)) return;
+
+    db.receipts=(db.receipts||[]).filter(r=>Number(r.id)!==Number(id));
+    saveDB();
+    render();
+    notify('تم حذف حركة الوارد وإعادة احتساب الرصيد');
+}
+
+/* =========================
+   تقارير المخزون
+========================= */
+function renderReports(){
+    const from=window.reportFrom||new Date().toISOString().slice(0,10);
+    const to=window.reportTo||new Date().toISOString().slice(0,10);
+    const categoryId=Number(window.reportCategoryId||0);
+    const productId=Number(window.reportProductId||0);
+    const rows=buildInventoryReport(from,to,categoryId,productId);
+    const totals=rows.reduce((a,r)=>({incoming:a.incoming+r.incoming,outgoing:a.outgoing+r.outgoing,balance:a.balance+r.balance}),{incoming:0,outgoing:0,balance:0});
+    return `${header('تقارير المخزون','الوارد والمنصرف والأرصدة')}
+    <main class="container">
+      <div class="page-title"><div><h2>تقارير المخزون</h2><div class="muted">اختر المخزن أو الصنف والفترة الزمنية.</div></div><button class="btn secondary" onclick="go('adminHome')">لوحة المدير ←</button></div>
+      <section class="card panel">
+        <div class="settings-grid">
+          <div class="form-group"><label>المخزن / القسم</label><select id="reportCategory" class="form-control" onchange="reportFilterChanged()"><option value="0">كل المخازن / الأقسام</option>${db.categories.map(c=>`<option value="${c.id}" ${c.id===categoryId?'selected':''}>${escapeHTML(c.name)}</option>`).join('')}</select></div>
+          <div class="form-group"><label>الصنف</label><select id="reportProduct" class="form-control" onchange="reportFilterChanged()"><option value="0">كل الأصناف</option>${db.products.filter(p=>!categoryId||p.categoryId===categoryId).map(p=>`<option value="${p.id}" ${p.id===productId?'selected':''}>${escapeHTML(p.code||'')} — ${escapeHTML(p.name)}</option>`).join('')}</select></div>
+          <div class="form-group"><label>من تاريخ</label><input id="reportFrom" type="date" class="form-control" value="${from}" onchange="reportFilterChanged()"></div>
+          <div class="form-group"><label>إلى تاريخ</label><input id="reportTo" type="date" class="form-control" value="${to}" onchange="reportFilterChanged()"></div>
+        </div>
+        <div class="actions" style="margin-top:12px"><button class="btn" onclick="printInventoryReport()">🖨️ طباعة التقرير</button><button class="btn success" onclick="exportInventoryReportXLS()">📊 تصدير Excel .xls</button></div>
+      </section>
+      <div class="settings-grid" style="margin-top:18px"><div class="stat-card"><div class="muted">إجمالي الوارد</div><h2>${totals.incoming}</h2></div><div class="stat-card"><div class="muted">إجمالي المنصرف</div><h2>${totals.outgoing}</h2></div><div class="stat-card"><div class="muted">إجمالي الأرصدة</div><h2>${totals.balance}</h2></div></div>
+      <section class="card panel" style="margin-top:18px"><div class="table-wrap"><table id="inventoryReportTable"><thead><tr><th>البيان</th><th>النتيجة</th><th>كود الصنف</th><th>المخزن</th><th>القسم</th><th>الصنف</th><th>رصيد أول المدة</th><th>الوارد</th><th>المنصرف</th><th>الرصيد الحالي</th></tr></thead><tbody>${rows.length?rows.map(r=>`<tr><td>${escapeHTML(r.statement)}</td><td>${escapeHTML(r.result)}</td><td>${escapeHTML(r.code)}</td><td>${escapeHTML(r.warehouse)}</td><td>${escapeHTML(r.section)}</td><td>${escapeHTML(r.name)}</td><td>${r.opening}</td><td>${r.incoming}</td><td>${r.outgoing}</td><td><b>${r.balance}</b></td></tr>`).join(''):'<tr><td colspan="10" class="empty">لا توجد بيانات للفترة المحددة</td></tr>'}</tbody></table></div></section>
+    </main>`;
+}
+function buildInventoryReport(from,to,categoryId=0,productId=0){
+    return db.products.filter(p=>(!categoryId||p.categoryId===categoryId)&&(!productId||p.id===productId)).map(p=>{
+        // التقرير يعتمد على الفترة المحددة: رصيد أول المدة قبل بداية الفترة،
+        // الوارد والمنصرف داخل الفترة، والرصيد في نهاية الفترة.
+        const opening=getStockBefore(p,from);
+        const incoming=getIncomingInPeriod(p.id,from,to);
+        const outgoing=getIssuedInPeriod(p.id,from,to);
+        const balance=getStockAt(p,to);
+        const c=categoryById(p.categoryId);
+        return {statement:'حركة مخزون',result:balance>0?'متاح':'رصيد صفر',code:p.code||String(p.id),warehouse:c?.name||'-',section:c?.name||'-',name:p.name,opening,incoming,outgoing,balance};
+    });
+}
+function reportFilterChanged(){
+    window.reportCategoryId=Number(document.getElementById('reportCategory').value); window.reportProductId=Number(document.getElementById('reportProduct').value); window.reportFrom=document.getElementById('reportFrom').value; window.reportTo=document.getElementById('reportTo').value; render();
+}
+function reportRowsForExport(){
+    return buildInventoryReport(window.reportFrom||new Date().toISOString().slice(0,10),window.reportTo||new Date().toISOString().slice(0,10),Number(window.reportCategoryId||0),Number(window.reportProductId||0));
+}
+function exportInventoryReportXLS(){
+    const rows=reportRowsForExport();
+    const table=`<table border="1"><tr><th>البيان</th><th>النتيجة</th><th>كود الصنف</th><th>المخزن</th><th>القسم</th><th>الصنف</th><th>رصيد أول المدة</th><th>الوارد</th><th>المنصرف</th><th>الرصيد الحالي</th></tr>${rows.map(r=>`<tr><td>${escapeHTML(r.statement)}</td><td>${escapeHTML(r.result)}</td><td>${escapeHTML(r.code)}</td><td>${escapeHTML(r.warehouse)}</td><td>${escapeHTML(r.section)}</td><td>${escapeHTML(r.name)}</td><td>${r.opening}</td><td>${r.incoming}</td><td>${r.outgoing}</td><td>${r.balance}</td></tr>`).join('')}</table>`;
+    const html=`<html><head><meta charset="UTF-8"></head><body dir="rtl">${table}</body></html>`;
+    const blob=new Blob(["\ufeff",html],{type:'application/vnd.ms-excel'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`تقرير-المخزون-${Date.now()}.xls`; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000); notify('تم تصدير التقرير إلى Excel');
+}
+function printInventoryReport(){
+    const rows=reportRowsForExport(); const from=window.reportFrom||''; const to=window.reportTo||''; const totalIn=rows.reduce((s,r)=>s+r.incoming,0),totalOut=rows.reduce((s,r)=>s+r.outgoing,0),totalBal=rows.reduce((s,r)=>s+r.balance,0);
+    const area=document.createElement('div'); area.id='printArea'; area.innerHTML=`<div class="issue-slip a4" dir="rtl"><div class="issue-head-title">تقرير المخزون</div><div style="text-align:center;margin:8px 0;font-weight:bold">من ${escapeHTML(from)} إلى ${escapeHTML(to)}</div><table class="issue-table"><thead><tr><th>البيان</th><th>النتيجة</th><th>كود الصنف</th><th>المخزن</th><th>الصنف</th><th>أول المدة</th><th>الوارد</th><th>المنصرف</th><th>الرصيد</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${escapeHTML(r.statement)}</td><td>${escapeHTML(r.result)}</td><td>${escapeHTML(r.code)}</td><td>${escapeHTML(r.warehouse)}</td><td>${escapeHTML(r.name)}</td><td>${r.opening}</td><td>${r.incoming}</td><td>${r.outgoing}</td><td>${r.balance}</td></tr>`).join('')}</tbody></table><div style="margin-top:15px;font-weight:bold">إجمالي الوارد: ${totalIn} &nbsp;&nbsp; إجمالي المنصرف: ${totalOut} &nbsp;&nbsp; إجمالي الأرصدة: ${totalBal}</div></div>`; document.body.appendChild(area); setTimeout(()=>{window.print();setTimeout(()=>area.remove(),800)},250);
+}
+
+/* =========================
+   الإعدادات
+========================= */
+
+/* =========================
+   الإعدادات
+========================= */
+
+function renderSettings(){
+    return `${header("إعدادات البرنامج","إدارة بيانات المخزن")}
+    <main class="container">
+      <div class="page-title"><div><h2>إعدادات البرنامج</h2><div class="muted">إدارة المخازن والأصناف والمستخدمين والاستيراد</div></div><button class="btn secondary" onclick="go('adminHome')">لوحة المدير ←</button></div>
+      <div class="actions" style="margin-bottom:18px;flex-wrap:wrap">
+        <button class="btn success" onclick="go('incoming')">📥 إضافة وارد</button>
+        <button class="btn" onclick="go('reports')">📊 تقارير المخزون</button>
+        <button class="btn secondary" onclick="openHistory()">📚 أذونات الصرف</button>
+      </div>
+      <div class="settings-grid">
+        <section class="card settings-card"><h3>🏷️ بيانات النظام</h3><form onsubmit="saveRestaurantSettings(event)">
+          <div class="form-group"><label>اسم المنشأة / المخزن الرئيسي</label><input id="restaurantName" class="form-control" value="${escapeHTML(db.settings.restaurantName)}" required></div>
+          <div class="form-group"><label>العنوان</label><input id="restaurantAddress" class="form-control" value="${escapeHTML(db.settings.address)}"></div>
+          <div class="form-group"><label>اسم المستلم الافتراضي</label><input id="receiverName" class="form-control" value="${escapeHTML(db.settings.receiverName||'')}"></div>
+          <div class="form-group"><label>كود المستلم</label><input id="receiverCode" class="form-control" value="${escapeHTML(db.settings.receiverCode||'')}"></div>
+          <div class="form-group"><label>اعتماد</label><input id="approver" class="form-control" value="${escapeHTML(db.settings.approver||'')}"></div>
+          <div class="form-group"><label>أمين المخزن</label><input id="storekeeper" class="form-control" value="${escapeHTML(db.settings.storekeeper||'')}"></div>
+          <div class="form-group"><label>النص أسفل الإذن</label><textarea id="invoiceFooter" class="form-control">${escapeHTML(db.settings.footer)}</textarea></div>
+          <div class="form-group"><label>شعار المنشأة</label><input id="restaurantLogo" type="file" class="form-control" accept="image/*">${db.settings.logo?`<img src="${escapeHTML(db.settings.logo)}" style="max-width:100px;margin-top:10px">`:''}</div>
+          <button class="btn success">حفظ البيانات</button>
+        </form></section>
+        <section class="card settings-card"><h3>💾 النسخ الاحتياطي</h3><p class="muted">البرنامج يعمل محليًا بدون إنترنت، والبيانات محفوظة على هذا الجهاز.</p><div class="actions"><button class="btn" onclick="backupData()">💾 تصدير نسخة</button><button class="btn warning" onclick="openRestorePicker()">📥 استرجاع نسخة</button></div><input id="restoreFile" type="file" accept=".json" style="display:none" onchange="restoreData(event)"></section>
+        <section class="card settings-card"><h3>📊 استيراد الأصناف من Excel</h3><p>يمكنك استيراد ملف <b>.xlsx</b> أو <b>.xlsm</b> أو <b>.csv</b> مباشرة من الجهاز دون إنترنت.</p><div class="import-box"><input id="excelProductsFile" type="file" class="form-control" accept=".xlsx,.xlsm,.csv,.txt" onchange="importProductsFromExcel(event)"><div class="import-help">يفضل أن تكون الأعمدة: <b>الكود، اسم الصنف، القسم، رصيد أول المدة، مكان الاستخدام</b>.<br>إذا كان القسم غير موجود سيتم إنشاؤه تلقائيًا. وإذا كان الصنف موجودًا بالكود سيتم تحديث رصيده.</div></div></section>
+        <section class="card settings-card"><h3>👥 إضافة مستخدم</h3><form onsubmit="addUser(event)"><div class="form-group"><label>اسم المستخدم</label><input id="newUsername" class="form-control" required></div><div class="form-group"><label>الاسم الظاهر</label><input id="newUserName" class="form-control" required></div><div class="form-group"><label>كلمة المرور</label><input id="newPassword" type="password" class="form-control" required></div><div class="form-group"><label>الصلاحية</label><select id="newRole" class="form-control"><option value="cashier">مستخدم</option><option value="admin">مدير</option></select></div><button class="btn success">إضافة مستخدم</button></form></section>
+      </div>
+      <section class="card settings-card" style="margin-top:20px"><div class="page-title"><h3>المخازن / الأقسام</h3><button class="btn success small" onclick="openCategoryModal()">➕ إضافة مخزن</button></div>${categoriesTable()}</section>
+      <section class="card settings-card" style="margin-top:20px"><div class="page-title"><h3>الأصناف والمخزون</h3><button class="btn success small" onclick="openProductModal()">➕ إضافة صنف</button></div>${productsTable()}</section>
+      <section class="card settings-card" style="margin-top:20px"><div class="page-title"><h3>المستخدمون</h3></div>${usersTable()}</section>
+    </main>`;
+}
+
+function saveRestaurantSettings(event){
+    event.preventDefault();
+    db.settings.restaurantName=document.getElementById('restaurantName').value.trim();
+    db.settings.address=document.getElementById('restaurantAddress').value.trim();
+    db.settings.receiverName=document.getElementById('receiverName').value.trim();
+    db.settings.receiverCode=document.getElementById('receiverCode').value.trim();
+    db.settings.approver=document.getElementById('approver').value.trim();
+    db.settings.storekeeper=document.getElementById('storekeeper').value.trim();
+    db.settings.footer=document.getElementById('invoiceFooter').value.trim();
+    const file=document.getElementById('restaurantLogo')?.files?.[0];
+    const finish=()=>{saveDB();render();notify('تم حفظ البيانات');};
+    if(file){const reader=new FileReader();reader.onload=()=>{db.settings.logo=reader.result;finish()};reader.readAsDataURL(file)}else finish();
+}
+
+/* =========================
+   جدول الأقسام
+========================= */
+
+function categoriesTable(){
+    if(!db.categories.length)return '<div class="empty">لا توجد مخازن</div>';
+    return `<div class="table-wrap"><table><thead><tr><th>#</th><th>اسم المخزن / القسم</th><th>الكود</th><th>عدد الأصناف</th><th>الإجراءات</th></tr></thead><tbody>${db.categories.map(c=>`<tr><td>${c.id}</td><td>${escapeHTML(c.name)}</td><td><b>${escapeHTML(c.code||'')}</b></td><td>${db.products.filter(p=>p.categoryId===c.id).length}</td><td><div class="actions"><button class="btn small" onclick="openCategoryModal(${c.id})">تعديل</button><button class="btn danger small" onclick="deleteCategory(${c.id})">حذف</button></div></td></tr>`).join('')}</tbody></table></div>`;
+}
+
+/* =========================
+   جدول الأصناف
+========================= */
+
+function productsTable(){
+    if(!db.products.length)return '<div class="empty">لا توجد أصناف</div>';
+    return `<div class="table-wrap"><table><thead><tr><th>#</th><th>الكود</th><th>الصورة</th><th>اسم الصنف</th><th>القسم</th><th>الكمية</th><th>مكان الاستخدام</th><th>الإجراءات</th></tr></thead><tbody>${db.products.map(p=>{const c=categoryById(p.categoryId);return `<tr><td>${p.id}</td><td>${escapeHTML(p.code||p.id)}</td><td>${p.image?`<img class="product-table-image" src="${escapeHTML(p.image)}" alt="${escapeHTML(p.name)}">`:`<div class="product-table-placeholder">📦</div>`}</td><td>${escapeHTML(p.name)}</td><td>${escapeHTML(c?.name||'-')}</td><td>${getOpeningBalance(p)}</td><td><span class="${getCurrentStock(p)>0?'stock-badge':'stock-badge out'}">${getCurrentStock(p)}</span></td><td>${escapeHTML(p.usagePlace||'-')}</td><td><div class="actions"><button class="btn small" onclick="openProductModal(${p.id})">تعديل</button><button class="btn danger small" onclick="deleteProduct(${p.id})">حذف</button></div></td></tr>`}).join('')}</tbody></table></div>`;
+}
+
+/* =========================
+   جدول المستخدمين
+========================= */
+
+function usersTable() {
+
+    return `
+
+        <div class="table-wrap">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            #
+                        </th>
+
+                        <th>
+                            اسم المستخدم
+                        </th>
+
+                        <th>
+                            الاسم الظاهر
+                        </th>
+
+                        <th>
+                            الصلاحية
+                        </th>
+
+                        <th>
+                            الإجراءات
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    ${
+                        db.users.map(
+                            user => `
+
+                                <tr>
+
+                                    <td>
+                                        ${user.id}
+                                    </td>
+
+                                    <td>
+                                        ${escapeHTML(
+                                            user.username
+                                        )}
+                                    </td>
+
+                                    <td>
+                                        ${escapeHTML(
+                                            user.name
+                                        )}
+                                    </td>
+
+                                    <td>
+                                        ${
+                                            user.role === "admin"
+                                            ? "مدير"
+                                            : "كاشير"
+                                        }
+                                    </td>
+
+                                    <td>
+
+                                        <div class="actions">
+
+                                            <button
+                                                class="btn small"
+                                                onclick="
+                                                    openUserModal(
+                                                        ${user.id}
+                                                    )
+                                                ">
+
+                                                تعديل
+
+                                            </button>
+
+                                            ${
+                                                user.username !==
+                                                "admin"
+
+                                                ? `
+
+                                                    <button
+                                                        class="
+                                                            btn danger small
+                                                        "
+                                                        onclick="
+                                                            deleteUser(
+                                                                ${user.id}
+                                                            )
+                                                        ">
+
+                                                        حذف
+
+                                                    </button>
+
+                                                `
+                                                : ""
+                                            }
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+
+                            `
+                        ).join("")
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    `;
+}
+
+/* =========================
+   إدارة الأقسام
+========================= */
+
+function openCategoryModal(id=null){
+    editingCategoryId=id; const c=id?categoryById(id):null;
+    showModal(`<div class="modal"><div class="modal-header"><h3>${c?'تعديل مخزن / قسم':'إضافة مخزن / قسم جديد'}</h3><button class="close" onclick="closeModal()">×</button></div><form onsubmit="saveCategory(event)"><div class="form-group"><label>اسم المخزن / القسم</label><input id="categoryName" class="form-control" value="${escapeHTML(c?.name||'')}" required></div><div class="form-group"><label>كود المخزن (يستخدم في رقم الإذن)</label><input id="categoryCode" class="form-control" value="${escapeHTML(c?.code||'')}" placeholder="elc" required><div class="muted" style="font-size:12px;margin-top:5px">مثال: elc ← أول إذن يصبح elc-0001</div></div><div class="modal-footer"><button class="btn success">حفظ</button><button type="button" class="btn light" onclick="closeModal()">إلغاء</button></div></form></div>`);
+}
+
+function saveCategory(event){
+    event.preventDefault(); const name=document.getElementById('categoryName').value.trim(); const code=document.getElementById('categoryCode').value.trim().toLowerCase().replace(/[^a-z0-9_-]/g,''); if(!name||!code){notify('أدخل اسم المخزن والكود','error');return;}
+    const duplicate=db.categories.some(c=>c.code===code&&c.id!==editingCategoryId); if(duplicate){notify('كود المخزن مستخدم بالفعل','error');return;}
+    if(editingCategoryId){const c=categoryById(editingCategoryId);c.name=name;c.code=code;}else{const c={id:makeId(db.categories),name,code};db.categories.push(c);selectedCategoryId=c.id;}
+    saveDB();closeModal();render();notify('تم حفظ المخزن / القسم');
+}
+
+function deleteCategory(id) {
+
+    if (
+        currentUser?.role !==
+        "admin"
+    ) return;
+
+    const category =
+        db.categories.find(
+            item =>
+                item.id ===
+                Number(id)
+        );
+
+    if (!category) return;
+
+    const productsCount =
+        db.products.filter(
+            product =>
+                product.categoryId ===
+                category.id
+        ).length;
+
+    const message =
+        productsCount
+
+        ? `
+            هذا القسم يحتوي على
+            ${productsCount}
+            صنف.
+            سيتم حذف القسم والأصناف التابعة له.
+            هل تستمر؟
+          `
+
+        : "هل تريد حذف هذا القسم؟";
+
+    if (!confirm(message))
+        return;
+
+    db.categories =
+        db.categories.filter(
+            item =>
+                item.id !==
+                category.id
+        );
+
+    db.products =
+        db.products.filter(
+            item =>
+                item.categoryId !==
+                category.id
+        );
+
+    selectedCategoryId =
+        db.categories[0]?.id ||
+        null;
+
+    saveDB();
+
+    render();
+
+    notify(
+        "تم حذف القسم"
+    );
+}
+
+/* =========================
+   إضافة / تعديل الصنف
+========================= */
+
+function openProductModal(id=null){
+    editingProductId=id;removeCurrentProductImage=false;const p=id?db.products.find(x=>x.id===Number(id)):null;
+    showModal(`<div class="modal"><div class="modal-header"><h3>${p?'تعديل صنف':'إضافة صنف جديد'}</h3><button class="close" onclick="closeModal()">×</button></div><form onsubmit="saveProduct(event)">
+      <div class="form-group"><label>اسم الصنف</label><input id="productName" class="form-control" value="${escapeHTML(p?.name||'')}" required></div>
+      <div class="form-group"><label>كود الصنف</label><input id="productCode" class="form-control" value="${escapeHTML(p?.code||'')}" placeholder="مثال: 1001"></div>
+      <div class="form-group"><label>المخزن / القسم</label><select id="productCategory" class="form-control" required>${db.categories.map(c=>`<option value="${c.id}" ${c.id===p?.categoryId?'selected':''}>${escapeHTML(c.name)} (${escapeHTML(c.code)})</option>`).join('')}</select></div>
+      <div class="form-group"><label>رصيد أول المدة</label><input id="productOpeningBalance" type="number" min="0" step="1" class="form-control" value="${Number(p?.openingBalance ?? p?.stock ?? 0)}" required><div class="muted" style="font-size:12px;margin-top:5px">الرصيد الحالي يحسب تلقائيًا من رصيد أول المدة + الوارد - المنصرف.</div></div>
+      <div class="form-group"><label>مكان الاستخدام</label><input id="productUsagePlace" class="form-control" value="${escapeHTML(p?.usagePlace||'')}" placeholder="مثال: مبنى الإدارة"></div>
+      <div class="form-group"><label>صورة الصنف (اختياري)</label><input id="productImage" type="file" class="form-control" accept="image/*" onchange="previewProductImage(event)"><input id="productImageUrl" type="url" class="form-control" style="margin-top:8px" placeholder="أو الصق رابط الصورة" value="${p?.image&&!String(p.image).startsWith('data:image/')?escapeHTML(p.image):''}" oninput="previewProductImageURL(event)"><div id="productImagePreview" class="product-image-preview">${p?.image?`<img src="${escapeHTML(p.image)}" alt="صورة الصنف">`:'📷'}</div></div>
+      <div class="modal-footer"><button class="btn success">حفظ</button><button type="button" class="btn light" onclick="closeModal()">إلغاء</button></div>
+    </form></div>`);
+}
+
+/* =========================
+   معاينة صورة الصنف
+========================= */
+
+function previewProductImage(event){const file=event.target.files?.[0],preview=document.getElementById('productImagePreview');if(!preview||!file)return;document.getElementById('productImageUrl').value='';const r=new FileReader();r.onload=()=>{preview.innerHTML=`<img src="${r.result}" alt="معاينة">`};r.readAsDataURL(file);}
+
+/* =========================
+   حذف صورة الصنف
+========================= */
+
+function removeProductImage() {
+
+    removeCurrentProductImage =
+        true;
+
+    const preview =
+        document.getElementById(
+            "productImagePreview"
+        );
+
+    if (preview) {
+
+        preview.innerHTML = `
+
+            <div
+                class="muted"
+                style="text-align:center">
+
+                🗑️
+                <br>
+                سيتم حذف الصورة عند الضغط على حفظ
+
+            </div>
+
+        `;
+    }
+
+    const input =
+        document.getElementById(
+            "productImage"
+        );
+
+    if (input) {
+
+        input.value =
+            "";
+    }
+}
+
+/* =========================
+   حفظ الصنف
+========================= */
+
+function saveProduct(event){
+    event.preventDefault();
+    const name=document.getElementById('productName').value.trim(),code=document.getElementById('productCode').value.trim(),categoryId=Number(document.getElementById('productCategory').value),openingBalance=Math.max(0,Number(document.getElementById('productOpeningBalance').value)||0),usagePlace=document.getElementById('productUsagePlace').value.trim(),file=document.getElementById('productImage')?.files?.[0],url=document.getElementById('productImageUrl')?.value.trim()||'';
+    if(!name||!categoryId){notify('أدخل بيانات الصنف','error');return;}
+    if(url&&!/^https?:\/\//i.test(url)&&!/^data:image\//i.test(url)){notify('رابط الصورة غير صحيح','error');return;}
+    const finish=(image)=>{if(editingProductId){const p=db.products.find(x=>x.id===editingProductId);if(!p)return;p.name=name;p.code=code||p.code||String(p.id);p.categoryId=categoryId;p.openingBalance=openingBalance;p.usagePlace=usagePlace;if(image!==undefined)p.image=image;}else{const id=makeId(db.products);db.products.push({id,code:code||String(id).padStart(4,'0'),name,categoryId,openingBalance,usagePlace,image:image||'',price:0});}saveDB();closeModal();render();notify('تم حفظ الصنف ورصيد أول المدة');};
+    if(file){const r=new FileReader();r.onload=()=>finish(r.result);r.readAsDataURL(file)}else if(url)finish(url);else finish(undefined);
+}
+
+/* =========================
+   حذف الصنف
+========================= */
+
+function deleteProduct(id) {
+
+    if (
+        !confirm(
+            "هل تريد حذف هذا الصنف؟"
+        )
+    ) return;
+
+    db.products =
+        db.products.filter(
+            item =>
+                item.id !==
+                Number(id)
+        );
+
+    cart =
+        cart.filter(
+            item =>
+                item.productId !==
+                Number(id)
+        );
+
+    saveDB();
+
+    render();
+
+    notify(
+        "تم حذف الصنف"
+    );
+}
+
+/* =========================
+   المستخدمون
+========================= */
+
+function addUser(event) {
+
+    event.preventDefault();
+
+    const username =
+        document
+        .getElementById(
+            "newUsername"
+        )
+        .value
+        .trim();
+
+    const name =
+        document
+        .getElementById(
+            "newUserName"
+        )
+        .value
+        .trim();
+
+    const password =
+        document
+        .getElementById(
+            "newPassword"
+        )
+        .value;
+
+    const role =
+        document
+        .getElementById(
+            "newRole"
+        )
+        .value;
+
+    if (
+        db.users.some(
+            user =>
+                user.username ===
+                username
+        )
+    ) {
+
+        notify(
+            "اسم المستخدم موجود بالفعل",
+            "error"
+        );
+
+        return;
+    }
+
+    db.users.push({
+
+        id:
+            makeId(
+                db.users
+            ),
+
+        username,
+
+        name,
+
+        password,
+
+        role
+
+    });
+
+    saveDB();
+
+    render();
+
+    notify(
+        "تمت إضافة المستخدم"
+    );
+}
+
+function openUserModal(id) {
+
+    const user =
+        db.users.find(
+            item =>
+                item.id ===
+                Number(id)
+        );
+
+    if (!user) return;
+
+    showModal(`
+
+        <div class="modal">
+
+            <div class="modal-header">
+
+                <h3>
+                    تعديل المستخدم
+                </h3>
+
+                <button
+                    class="close"
+                    onclick="closeModal()">
+                    ×
+                </button>
+
+            </div>
+
+            <form
+                onsubmit="
+                    saveUser(
+                        event,
+                        ${user.id}
+                    )
+                ">
+
+                <div class="form-group">
+
+                    <label>
+                        اسم المستخدم
+                    </label>
+
+                    <input
+                        id="editUsername"
+                        class="form-control"
+                        value="${escapeHTML(
+                            user.username
+                        )}"
+                        required>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+                        الاسم الظاهر
+                    </label>
+
+                    <input
+                        id="editUserName"
+                        class="form-control"
+                        value="${escapeHTML(
+                            user.name
+                        )}"
+                        required>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+                        كلمة المرور الجديدة
+                    </label>
+
+                    <input
+                        id="editPassword"
+                        type="password"
+                        class="form-control"
+                        placeholder="
+                            اتركها فارغة للإبقاء على الحالية
+                        ">
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+                        الصلاحية
+                    </label>
+
+                    <select
+                        id="editRole"
+                        class="form-control">
+
+                        <option
+                            value="cashier"
+                            ${
+                                user.role ===
+                                "cashier"
+                                ? "selected"
+                                : ""
+                            }>
+
+                            كاشير
+
+                        </option>
+
+                        <option
+                            value="admin"
+                            ${
+                                user.role ===
+                                "admin"
+                                ? "selected"
+                                : ""
+                            }>
+
+                            مدير
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button
+                        class="btn success">
+
+                        حفظ
+
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn light"
+                        onclick="
+                            closeModal()
+                        ">
+
+                        إلغاء
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    `);
+}
+
+function saveUser(
+    event,
+    id
+) {
+
+    event.preventDefault();
+
+    const user =
+        db.users.find(
+            item =>
+                item.id ===
+                Number(id)
+        );
+
+    if (!user)
+        return;
+
+    const username =
+        document
+        .getElementById(
+            "editUsername"
+        )
+        .value
+        .trim();
+
+    const name =
+        document
+        .getElementById(
+            "editUserName"
+        )
+        .value
+        .trim();
+
+    const password =
+        document
+        .getElementById(
+            "editPassword"
+        )
+        .value;
+
+    const role =
+        document
+        .getElementById(
+            "editRole"
+        )
+        .value;
+
+    const duplicate =
+        db.users.some(
+            item =>
+                item.username ===
+                username &&
+                item.id !==
+                user.id
+        );
+
+    if (duplicate) {
+
+        notify(
+            "اسم المستخدم مستخدم بالفعل",
+            "error"
+        );
+
+        return;
+    }
+
+    user.username =
+        username;
+
+    user.name =
+        name;
+
+    user.role =
+        role;
+
+    if (password) {
+
+        user.password =
+            password;
+    }
+
+    if (
+        currentUser.id ===
+        user.id
+    ) {
+
+        currentUser =
+            user;
+    }
+
+    saveDB();
+
+    closeModal();
+
+    render();
+
+    notify(
+        "تم تعديل المستخدم"
+    );
+}
+
+function deleteUser(id) {
+
+    const user =
+        db.users.find(
+            item =>
+                item.id ===
+                Number(id)
+        );
+
+    if (
+        !user ||
+        user.username ===
+        "admin"
+    ) return;
+
+    if (
+        !confirm(
+            "هل تريد حذف هذا المستخدم؟"
+        )
+    ) return;
+
+    db.users =
+        db.users.filter(
+            item =>
+                item.id !==
+                user.id
+        );
+
+    saveDB();
+
+    render();
+
+    notify(
+        "تم حذف المستخدم"
+    );
+}
+
+/* =========================
+   النسخ الاحتياطي
+========================= */
+
+function backupData() {
+
+    if (
+        currentUser?.role !==
+        "admin"
+    ) {
+
+        notify(
+            "هذه العملية للمدير فقط",
+            "error"
+        );
+
+        return;
+    }
+
+    const content =
+        JSON.stringify(
+            db,
+            null,
+            2
+        );
+
+    const blob =
+        new Blob(
+            [content],
+            {
+                type:
+                    "application/json"
+            }
+        );
+
+    const url =
+        URL.createObjectURL(
+            blob
+        );
+
+    const link =
+        document.createElement(
+            "a"
+        );
+
+    link.href =
+        url;
+
+    link.download =
+        `restaurant-pos-backup-${
+            new Date()
+            .toISOString()
+            .slice(0,10)
+        }.json`;
+
+    link.click();
+
+    URL.revokeObjectURL(
+        url
+    );
+
+    notify(
+        "تم إنشاء النسخة الاحتياطية"
+    );
+}
+
+function openRestorePicker() {
+
+    document
+        .getElementById(
+            "restoreFile"
+        )
+        .click();
+}
+
+function restoreData(event){const file=event.target.files?.[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{try{const restored=JSON.parse(reader.result);if(!restored.users||!restored.categories||!restored.products)throw new Error('invalid');if(!confirm('سيتم استبدال البيانات الحالية بالكامل. هل تريد المتابعة؟'))return;db={...clone(DEFAULT_DATA),...restored,categories:(restored.categories||[]).map((c,i)=>({...c,code:String(c.code||slugCode(c.name)||`sec${i+1}`)})),products:(restored.products||[]).map(p=>({...p,price:0,openingBalance:Number(p.openingBalance??p.stock??p.quantity??0),usagePlace:p.usagePlace||'',code:String(p.code||p.id),image:p.image||''})),issues:Array.isArray(restored.issues)?restored.issues:(restored.invoices||[]),receipts:Array.isArray(restored.receipts)?restored.receipts:[],issueCounters:restored.issueCounters||{},settings:{...clone(DEFAULT_DATA.settings),...(restored.settings||{})}};db.invoices=db.issues;saveDB();selectedCategoryId=db.categories[0]?.id||null;render();notify('تم استرجاع النسخة الاحتياطية');}catch(e){notify('ملف النسخة الاحتياطية غير صالح','error')}};reader.readAsText(file);}
+
+/* =========================
+   تشغيل البرنامج
+========================= */
+
+render();
+
+</script>
+
+</body>
+</html>
